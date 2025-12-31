@@ -128,7 +128,7 @@ class OrderResource extends Resource
                                     ->options(Product::query()->pluck('name', 'id'))
                                     ->required()
                                     ->searchable()
-                                    ->live(onBlur: true) // Se activa al perder foco (Tab o clic fuera)
+                                    ->live() // ✅ Se activa INMEDIATAMENTE al seleccionar el producto
                                     ->afterStateUpdated(function ($state, Set $set, Get $get) {
                                         if ($state) {
                                             $price = Product::find($state)?->price ?? 0;
@@ -322,26 +322,38 @@ class OrderResource extends Resource
     // FUNCIÓN AUXILIAR: LA MATEMÁTICA DE LA SUMA
     // ============================================================
     // Esta función recorre todas las filas del carrito y suma (precio * cantidad)
+    /**
+     * Calcula el total sumando todos los items del carrito.
+     * Se ejecuta cada vez que cambia un producto, cantidad o precio.
+     */
     public static function updateTotal(Get $get, Set $set): void
     {
         $items = $get('items'); // Obtiene la lista de productos
         $sum = 0;
 
-        if ($items) {
+        if ($items && is_array($items)) {
             foreach ($items as $item) {
+                // Validar que el item sea un array
+                if (!is_array($item)) {
+                    continue;
+                }
+
                 // Si la cantidad está vacía o es 0, usa 1 por defecto
-                $qty = (int) ($item['quantity'] ?? 1);
-                if ($qty == 0) {
+                $qty = isset($item['quantity']) ? (int) $item['quantity'] : 1;
+                if ($qty <= 0) {
                     $qty = 1;
                 }
                 
-                $price = (float) ($item['unit_price'] ?? 0);
+                // Obtener el precio unitario
+                $price = isset($item['unit_price']) ? (float) $item['unit_price'] : 0;
                 
+                // Sumar al total
                 $sum += $qty * $price;
             }
         }
 
-        $set('total_price', $sum); // Escribe el resultado en el campo TOTAL
+        // Establecer el total con 2 decimales
+        $set('total_price', round($sum, 2));
     }
 
     public static function getPages(): array

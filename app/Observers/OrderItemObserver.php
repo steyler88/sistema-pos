@@ -8,7 +8,7 @@ class OrderItemObserver
 {
     /**
      * Se ejecuta cuando se CREA un item en una venta (Vendiste una pizza).
-     * ACCIÓN: Restar insumos del inventario.
+     * ACCIÓN: Restar insumos del inventario y recalcular total.
      */
     public function created(OrderItem $orderItem): void
     {
@@ -31,11 +31,23 @@ class OrderItemObserver
                 $ingredient->decrement('stock', $totalToDeduct);
             }
         }
+
+        // 4. ✅ Recalcular el total de la orden
+        $this->recalculateOrderTotal($orderItem);
+    }
+
+    /**
+     * Se ejecuta cuando se ACTUALIZA un item.
+     * ACCIÓN: Recalcular el total de la orden.
+     */
+    public function updated(OrderItem $orderItem): void
+    {
+        $this->recalculateOrderTotal($orderItem);
     }
 
     /**
      * Se ejecuta cuando ELIMINAS un item de una venta (Cancelación).
-     * ACCIÓN: Devolver insumos al inventario.
+     * ACCIÓN: Devolver insumos al inventario y recalcular total.
      */
     public function deleted(OrderItem $orderItem): void
     {
@@ -50,6 +62,26 @@ class OrderItemObserver
                 // Devolvemos al stock (Incrementamos)
                 $ingredient->increment('stock', $totalToReturn);
             }
+        }
+
+        // ✅ Recalcular el total de la orden
+        $this->recalculateOrderTotal($orderItem);
+    }
+
+    /**
+     * Recalcula el total de la orden sumando todos sus items.
+     */
+    private function recalculateOrderTotal(OrderItem $orderItem): void
+    {
+        $order = $orderItem->order;
+        
+        if ($order) {
+            $total = $order->items()->get()->sum(function ($item) {
+                return $item->quantity * $item->unit_price;
+            });
+
+            // Actualizar sin disparar eventos
+            $order->updateQuietly(['total_price' => $total]);
         }
     }
 }
