@@ -128,11 +128,15 @@ class OrderResource extends Resource
                                     ->options(Product::query()->pluck('name', 'id'))
                                     ->required()
                                     ->searchable()
-                                    ->reactive()
+                                    ->live(onBlur: true) // Se activa al perder foco (Tab o clic fuera)
                                     ->afterStateUpdated(function ($state, Set $set, Get $get) {
-                                        $price = Product::find($state)?->price ?? 0;
-                                        $set('unit_price', $price);
-                                        self::updateTotal($get, $set);
+                                        if ($state) {
+                                            $price = Product::find($state)?->price ?? 0;
+                                            $set('unit_price', $price);
+                                            
+                                            // ✅ Calcular total inmediatamente con cantidad por defecto
+                                            self::updateTotal($get, $set);
+                                        }
                                     }),
 
                                 Forms\Components\TextInput::make('quantity')
@@ -325,8 +329,12 @@ class OrderResource extends Resource
 
         if ($items) {
             foreach ($items as $item) {
-                // Si la cantidad o el precio están vacíos, asume 0
-                $qty = (int) ($item['quantity'] ?? 0);
+                // Si la cantidad está vacía o es 0, usa 1 por defecto
+                $qty = (int) ($item['quantity'] ?? 1);
+                if ($qty == 0) {
+                    $qty = 1;
+                }
+                
                 $price = (float) ($item['unit_price'] ?? 0);
                 
                 $sum += $qty * $price;
