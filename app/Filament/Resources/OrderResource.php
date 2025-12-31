@@ -26,91 +26,161 @@ class OrderResource extends Resource
         return $form
             ->schema([
                 // ============================================================
-                // SECCIÓN 1: DATOS DEL CLIENTE Y ESTADO
+                // SECCIÓN 1: TIPO DE PEDIDO (BOTONES GRANDES Y VISUALES)
                 // ============================================================
-                Forms\Components\Section::make('Información del Pedido')
+                Forms\Components\Section::make('🍕 Tipo de Pedido')
+                    ->description('Selecciona dónde se consumirá el pedido')
+                    ->schema([
+                        Forms\Components\ToggleButtons::make('order_type')
+                            ->label('¿Dónde será el servicio?')
+                            ->options([
+                                'delivery' => 'Delivery',
+                                'para_llevar' => 'Para Llevar',
+                                'mesa' => 'Mesa',
+                                'barra' => 'Barra',
+                            ])
+                            ->icons([
+                                'delivery' => 'heroicon-o-truck',
+                                'para_llevar' => 'heroicon-o-shopping-bag',
+                                'mesa' => 'heroicon-o-table-cells',
+                                'barra' => 'heroicon-o-chart-bar',
+                            ])
+                            ->colors([
+                                'delivery' => 'success',
+                                'para_llevar' => 'warning',
+                                'mesa' => 'info',
+                                'barra' => 'danger',
+                            ])
+                            ->inline()
+                            ->required()
+                            ->default('delivery') // 👈 VALOR POR DEFECTO: DELIVERY
+                            ->live(), // Para mostrar/ocultar el campo de ubicación
+
+                        // Campo condicional: solo se muestra si es Mesa o Barra
+                        Forms\Components\Select::make('table_location')
+                            ->label('Ubicación')
+                            ->options([
+                                'Mesa 1' => 'Mesa 1',
+                                'Mesa 2' => 'Mesa 2',
+                                'Barra' => 'Barra',
+                            ])
+                            ->visible(fn (Get $get): bool => 
+                                in_array($get('order_type'), ['mesa', 'barra'])
+                            )
+                            ->required(fn (Get $get): bool => 
+                                in_array($get('order_type'), ['mesa', 'barra'])
+                            ),
+                    ])->columns(1),
+
+                // ============================================================
+                // SECCIÓN 2: DATOS DEL CLIENTE Y PAGO
+                // ============================================================
+                Forms\Components\Section::make('👤 Datos del Cliente')
                     ->schema([
                         Forms\Components\TextInput::make('customer_name')
-                            ->label('Cliente')
-                            ->placeholder('Público General')
-                            ->required(), // Campo obligatorio
+                            ->label('Nombre del Cliente')
+                            ->placeholder('Ej: Juan Pérez')
+                            ->default('Cliente General')
+                            ->required(),
 
-                        Forms\Components\Select::make('payment_method')
+                        Forms\Components\ToggleButtons::make('payment_method')
                             ->label('Forma de Pago')
                             ->options([
+                                'yape' => 'Yape / Plin',
                                 'cash' => 'Efectivo',
                                 'card' => 'Tarjeta',
-                                'yape' => 'Yape / Plin',
                             ])
+                            ->icons([
+                                'yape' => 'heroicon-o-device-phone-mobile',
+                                'cash' => 'heroicon-o-banknotes',
+                                'card' => 'heroicon-o-credit-card',
+                            ])
+                            ->colors([
+                                'yape' => 'success',
+                                'cash' => 'warning',
+                                'card' => 'info',
+                            ])
+                            ->inline()
+                            ->default('yape') // 👈 VALOR POR DEFECTO: YAPE
                             ->required(),
 
                         Forms\Components\Select::make('status')
-                            ->label('Estado')
+                            ->label('Estado del Pedido')
                             ->options([
-                                'pending' => 'Pendiente',
-                                'completed' => 'Pagado y Entregado',
-                                'cancelled' => 'Cancelado',
+                                'pending' => '⏳ Pendiente',
+                                'completed' => '✅ Pagado y Entregado',
+                                'cancelled' => '❌ Cancelado',
                             ])
-                            ->default('pending') // Por defecto nace como pendiente
+                            ->default('pending') // 👈 VALOR POR DEFECTO: PENDIENTE
                             ->required(),
-                    ])->columns(3), // Organiza estos 3 campos en columnas
+                    ])->columns(3),
 
                 // ============================================================
-                // SECCIÓN 2: CARRITO DE COMPRAS (DONDE OCURRE LA MAGIA)
+                // SECCIÓN 3: CARRITO DE PRODUCTOS
                 // ============================================================
-                Forms\Components\Section::make('Productos')
+                Forms\Components\Section::make('🛒 Productos del Pedido')
                     ->schema([
-                        Forms\Components\Repeater::make('items') // Permite agregar muchas líneas
+                        Forms\Components\Repeater::make('items')
                             ->relationship()
                             ->schema([
-                                // --- COLUMNA 1: SELECCIONAR PIZZA ---
                                 Forms\Components\Select::make('product_id')
                                     ->label('Producto')
                                     ->options(Product::query()->pluck('name', 'id'))
                                     ->required()
-                                    ->searchable() // Permite escribir para buscar
-                                    ->reactive()   // Escucha cambios para actualizar precios
-                                    
-                                    // LOGICA: Cuando eliges pizza, busca el precio y actualiza el total
+                                    ->searchable()
+                                    ->reactive()
                                     ->afterStateUpdated(function ($state, Set $set, Get $get) {
                                         $price = Product::find($state)?->price ?? 0;
-                                        $set('unit_price', $price); // Pone el precio unitario
-                                        self::updateTotal($get, $set); // Recalcula la suma total
+                                        $set('unit_price', $price);
+                                        self::updateTotal($get, $set);
                                     }),
 
-                                // --- COLUMNA 2: CANTIDAD ---
                                 Forms\Components\TextInput::make('quantity')
                                     ->label('Cantidad')
                                     ->numeric()
                                     ->default(1)
                                     ->required()
-                                    ->live() // Escucha en vivo cada vez que escribes
-                                    // LOGICA: Al cambiar cantidad, recalcula el total
+                                    ->minValue(1)
+                                    ->live()
                                     ->afterStateUpdated(fn (Get $get, Set $set) => self::updateTotal($get, $set)),
 
-                                // --- COLUMNA 3: PRECIO UNITARIO ---
                                 Forms\Components\TextInput::make('unit_price')
                                     ->label('Precio Unit.')
                                     ->numeric()
                                     ->required()
                                     ->prefix('S/')
-                                    ->live() // Escucha en vivo
-                                    // LOGICA: Si cambias el precio manualmente, recalcula el total
+                                    ->live()
                                     ->afterStateUpdated(fn (Get $get, Set $set) => self::updateTotal($get, $set)),
                             ])
-                            ->columns(3) // Alinea producto, cantidad y precio
-                            ->addActionLabel('Agregar otro producto')
-                            ->live() // Escucha si borras una línea para restar del total
-                            ->afterStateUpdated(fn (Get $get, Set $set) => self::updateTotal($get, $set)),
+                            ->columns(3)
+                            ->addActionLabel('➕ Agregar otro producto')
+                            ->live()
+                            ->afterStateUpdated(fn (Get $get, Set $set) => self::updateTotal($get, $set))
+                            ->defaultItems(1), // Inicia con una fila lista
                         
-                        // --- CAMPO FINAL: TOTAL AUTOMÁTICO ---
                         Forms\Components\TextInput::make('total_price')
-                            ->label('TOTAL A COBRAR')
+                            ->label('💰 TOTAL A COBRAR')
                             ->numeric()
                             ->prefix('S/')
-                            ->readOnly() // No se puede editar a mano, solo se calcula solo
-                            ->default(0),
+                            ->readOnly()
+                            ->default(0)
+                            ->extraAttributes(['class' => 'text-2xl font-bold']),
                     ]),
+
+                // ============================================================
+                // SECCIÓN 4: NOTAS ADICIONALES
+                // ============================================================
+                Forms\Components\Section::make('📝 Notas Adicionales')
+                    ->description('Instrucciones especiales para el pedido')
+                    ->schema([
+                        Forms\Components\Textarea::make('notes')
+                            ->label('Notas')
+                            ->placeholder('Ej: Sin cebolla, extra salsa, etc.')
+                            ->rows(3)
+                            ->columnSpanFull(),
+                    ])
+                    ->collapsible()
+                    ->collapsed(),
             ]);
     }
 
@@ -122,34 +192,118 @@ class OrderResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')
-                    ->label('N° Venta')
+                    ->label('#')
+                    ->sortable()
+                    ->searchable(),
+
+                // Nuevo: Tipo de Pedido con Badge
+                Tables\Columns\BadgeColumn::make('order_type')
+                    ->label('Tipo')
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'delivery' => 'Delivery',
+                        'para_llevar' => 'Para Llevar',
+                        'mesa' => 'Mesa',
+                        'barra' => 'Barra',
+                        default => $state,
+                    })
+                    ->colors([
+                        'success' => 'delivery',
+                        'warning' => 'para_llevar',
+                        'info' => 'mesa',
+                        'danger' => 'barra',
+                    ])
+                    ->icons([
+                        'delivery' => 'heroicon-o-truck',
+                        'para_llevar' => 'heroicon-o-shopping-bag',
+                        'mesa' => 'heroicon-o-table-cells',
+                        'barra' => 'heroicon-o-chart-bar',
+                    ])
                     ->sortable(),
+
+                // Nuevo: Ubicación (Mesa/Barra)
+                Tables\Columns\TextColumn::make('table_location')
+                    ->label('Ubicación')
+                    ->default('—')
+                    ->searchable(),
 
                 Tables\Columns\TextColumn::make('customer_name')
                     ->label('Cliente')
-                    ->searchable(),
+                    ->searchable()
+                    ->limit(20),
+
+                // Nuevo: Forma de Pago con icono
+                Tables\Columns\BadgeColumn::make('payment_method')
+                    ->label('Pago')
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'yape' => 'Yape',
+                        'cash' => 'Efectivo',
+                        'card' => 'Tarjeta',
+                        default => $state,
+                    })
+                    ->colors([
+                        'success' => 'yape',
+                        'warning' => 'cash',
+                        'info' => 'card',
+                    ]),
 
                 Tables\Columns\TextColumn::make('total_price')
                     ->label('Total')
                     ->money('PEN')
                     ->sortable()
-                    ->weight('bold'), // Pone el texto en negrita
+                    ->weight('bold')
+                    ->color('success'),
 
-                Tables\Columns\TextColumn::make('status')
+                Tables\Columns\BadgeColumn::make('status')
                     ->label('Estado')
-                    ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'pending' => 'warning',
-                        'completed' => 'success',
-                        'cancelled' => 'danger',
-                    }),
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'pending' => 'Pendiente',
+                        'completed' => 'Completado',
+                        'cancelled' => 'Cancelado',
+                        default => $state,
+                    })
+                    ->colors([
+                        'warning' => 'pending',
+                        'success' => 'completed',
+                        'danger' => 'cancelled',
+                    ]),
                 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Fecha/Hora')
                     ->dateTime('d/m/Y H:i')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
+            ])
+            ->filters([
+                // Filtro por tipo de pedido
+                Tables\Filters\SelectFilter::make('order_type')
+                    ->label('Tipo de Pedido')
+                    ->options([
+                        'delivery' => 'Delivery',
+                        'para_llevar' => 'Para Llevar',
+                        'mesa' => 'Mesa',
+                        'barra' => 'Barra',
+                    ]),
+                
+                // Filtro por estado
+                Tables\Filters\SelectFilter::make('status')
+                    ->label('Estado')
+                    ->options([
+                        'pending' => 'Pendiente',
+                        'completed' => 'Completado',
+                        'cancelled' => 'Cancelado',
+                    ]),
+
+                // Filtro por forma de pago
+                Tables\Filters\SelectFilter::make('payment_method')
+                    ->label('Forma de Pago')
+                    ->options([
+                        'yape' => 'Yape',
+                        'cash' => 'Efectivo',
+                        'card' => 'Tarjeta',
+                    ]),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
