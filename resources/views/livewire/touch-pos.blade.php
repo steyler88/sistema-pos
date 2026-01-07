@@ -168,53 +168,59 @@
                 </div>
             </div>
 
-            <!-- TABLA DE ITEMS - MÁS COMPACTA Y CON MÁS ALTURA -->
+            <!-- TABLA DE ITEMS - COMPACTA, LIMPIA Y ALINEADA -->
             <div class="flex-1 overflow-y-auto bg-white dark:bg-gray-800" style="min-height: 300px; max-height: 400px;">
                 
-                <!-- Encabezado de Tabla -->
-                <div class="bg-gray-100 dark:bg-gray-700 px-2 py-1 border-b border-gray-200 dark:border-gray-600 sticky top-0">
-                    <div class="grid grid-cols-12 gap-1 text-[10px] font-bold text-gray-600 dark:text-gray-300 uppercase">
-                        <div class="col-span-5">Nombre</div>
+                <!-- Encabezado de Tabla - ALINEADO -->
+                <div class="bg-gray-800 dark:bg-gray-700 px-2 py-1.5 border-b-2 border-gray-600 sticky top-0 z-10">
+                    <div class="grid grid-cols-12 gap-1 text-[9px] font-bold text-white uppercase tracking-wide">
+                        <div class="col-span-4">Nombre</div>
                         <div class="col-span-3 text-center">Cant.</div>
-                        <div class="col-span-2 text-right">Precio</div>
-                        <div class="col-span-2 text-right">Total</div>
+                        <div class="col-span-2 text-right pr-1">Precio</div>
+                        <div class="col-span-3 text-right pr-1">Total</div>
                     </div>
                 </div>
 
                 <!-- Items del Pedido -->
                 <div class="divide-y divide-gray-200 dark:divide-gray-700">
                     @forelse($cart as $key => $item)
-                        <div class="px-2 py-1 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        <div class="px-2 py-1.5 hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors group">
                             <div class="grid grid-cols-12 gap-1 items-center">
                                 <!-- Nombre -->
-                                <div class="col-span-5">
-                                    <div class="font-semibold text-[11px] text-gray-900 dark:text-white leading-tight">{{ $item['name'] }}</div>
-                                    <button class="text-[9px] text-blue-600 hover:text-blue-700">+ Nota</button>
+                                <div class="col-span-4">
+                                    <div class="font-semibold text-[10px] text-gray-900 dark:text-white leading-tight group-hover:text-gray-900 dark:group-hover:text-white">
+                                        {{ $item['name'] }}
+                                    </div>
+                                    <button class="text-[8px] text-blue-600 hover:text-blue-700 dark:text-blue-400">+ Nota</button>
                                 </div>
 
                                 <!-- Controles de Cantidad -->
                                 <div class="col-span-3 flex items-center justify-center gap-1">
                                     <button wire:click="decreaseQuantity('{{ $key }}')"
-                                            class="w-6 h-6 flex items-center justify-center bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-700 dark:text-white rounded text-sm font-bold transition-colors">
+                                            class="w-5 h-5 flex items-center justify-center bg-gray-200 hover:bg-red-500 hover:text-white dark:bg-gray-600 dark:hover:bg-red-600 text-gray-700 dark:text-white rounded text-xs font-bold transition-all">
                                         −
                                     </button>
-                                    <span class="w-6 text-center font-bold text-[11px] text-gray-900 dark:text-white">{{ $item['quantity'] }}</span>
+                                    <span class="w-6 text-center font-bold text-[10px] text-gray-900 dark:text-white group-hover:text-gray-900 dark:group-hover:text-white">
+                                        {{ $item['quantity'] }}
+                                    </span>
                                     <button wire:click="increaseQuantity('{{ $key }}')"
-                                            class="w-6 h-6 flex items-center justify-center bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-700 dark:text-white rounded text-sm font-bold transition-colors">
+                                            class="w-5 h-5 flex items-center justify-center bg-gray-200 hover:bg-green-500 hover:text-white dark:bg-gray-600 dark:hover:bg-green-600 text-gray-700 dark:text-white rounded text-xs font-bold transition-all">
                                         +
                                     </button>
                                 </div>
 
                                 <!-- Precio Unitario -->
-                                <div class="col-span-2 text-right text-[11px] font-semibold text-gray-700 dark:text-gray-300">
+                                <div class="col-span-2 text-right text-[10px] font-semibold text-gray-700 dark:text-gray-300 pr-1 group-hover:text-gray-900 dark:group-hover:text-white">
                                     S/{{ number_format($item['price'], 2) }}
                                 </div>
 
-                                <!-- Total -->
-                                <div class="col-span-2 text-right font-bold text-[11px] text-gray-900 dark:text-white flex items-center justify-end gap-1">
-                                    <span>S/{{ number_format($item['quantity'] * $item['price'], 2) }}</span>
+                                <!-- Total + Eliminar -->
+                                <div class="col-span-3 flex items-center justify-end gap-1 pr-1">
+                                    <span class="font-bold text-[10px] text-gray-900 dark:text-white group-hover:text-gray-900 dark:group-hover:text-white">
+                                        S/{{ number_format($item['quantity'] * $item['price'], 2) }}
+                                    </span>
                                     <button wire:click="removeFromCart('{{ $key }}')" 
-                                            class="w-5 h-5 flex items-center justify-center text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors">
+                                            class="w-5 h-5 flex items-center justify-center text-red-500 hover:text-white hover:bg-red-600 rounded transition-all ml-1">
                                         <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
                                         </svg>
@@ -325,43 +331,49 @@
                 </div>
             </div>
 
-            <!-- Botones de Acción - 2 FILAS COMPACTAS -->
-            <div class="p-2 bg-white dark:bg-gray-800 border-t-2 border-gray-300 dark:border-gray-600 space-y-1">
-                <!-- Primera Fila: 3 botones grises -->
-                <div class="grid grid-cols-3 gap-1">
-                    <button class="px-1 py-2 bg-gray-600 hover:bg-gray-700 text-white font-bold text-[10px] rounded transition-all leading-tight">
+            <!-- Botones de Acción - HORIZONTAL COMPACTO -->
+            <div class="p-2 bg-white dark:bg-gray-800 border-t-2 border-gray-300 dark:border-gray-600">
+                <!-- Todos los botones en 2 filas horizontales -->
+                <div class="flex flex-col gap-1">
+                    <!-- Fila 1: Pre-cuenta y CUENTA -->
+                    <div class="grid grid-cols-2 gap-1">
+                        <!-- Pre-cuenta (Rosado) -->
+                        <button class="px-2 py-2 bg-pink-500 hover:bg-pink-600 text-white font-bold text-[10px] rounded transition-all shadow-md">
+                            Pre-cuenta
+                        </button>
+                        
+                        <!-- CUENTA (Morado/Azul - Destacado) -->
+                        <button wire:click="saveOrder" 
+                                class="px-2 py-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-black text-xs rounded transition-all active:scale-95 shadow-lg uppercase">
+                            CUENTA
+                        </button>
+                    </div>
+                    
+                    <!-- Fila 2: Orden de cocina -->
+                    <button class="px-2 py-2 bg-gray-600 hover:bg-gray-700 text-white font-bold text-[10px] rounded transition-all">
                         Orden de cocina
                     </button>
-                    <button class="px-1 py-2 bg-gray-600 hover:bg-gray-700 text-white font-bold text-[10px] rounded transition-all leading-tight">
-                        Orden & Imprimir
-                    </button>
-                    <button class="px-1 py-2 bg-gray-600 hover:bg-gray-700 text-white font-bold text-[10px] rounded transition-all leading-tight">
-                        Orden, Cuenta & Pago
-                    </button>
-                </div>
-                
-                <!-- Segunda Fila: 4 botones de colores -->
-                <div class="grid grid-cols-4 gap-1">
-                    <!-- Pre-cuenta (Rosado) -->
-                    <button class="px-1 py-2 bg-pink-500 hover:bg-pink-600 text-white font-bold text-[10px] rounded transition-all shadow-md leading-tight">
-                        Pre-cuenta
+                    
+                    <!-- Fila 3: Orden & Imprimir -->
+                    <button class="px-2 py-2 bg-gray-600 hover:bg-gray-700 text-white font-bold text-[10px] rounded transition-all">
+                        Orden de cocina & Imprimir
                     </button>
                     
-                    <!-- CUENTA (Morado/Azul - Destacado) -->
-                    <button wire:click="saveOrder" 
-                            class="px-1 py-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-black text-xs rounded transition-all active:scale-95 shadow-lg uppercase leading-tight">
-                        CUENTA
+                    <!-- Fila 4: Orden, Cuenta & Pago -->
+                    <button class="px-2 py-2 bg-gray-600 hover:bg-gray-700 text-white font-bold text-[10px] rounded transition-all">
+                        Orden de cocina, Cuenta & Pago
                     </button>
                     
-                    <!-- Cuenta y Pagar (Verde) -->
-                    <button class="px-1 py-2 bg-green-500 hover:bg-green-600 text-white font-bold text-[10px] rounded transition-all shadow-md leading-tight">
-                        Cuenta & Pagar
-                    </button>
-                    
-                    <!-- Cuenta e Imprimir (Azul) -->
-                    <button class="px-1 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold text-[10px] rounded transition-all shadow-md leading-tight">
-                        Cuenta & Imprimir
-                    </button>
+                    <!-- Fila 5: Cuenta y Pagar + Cuenta e Imprimir -->
+                    <div class="grid grid-cols-2 gap-1">
+                        <button class="px-2 py-2 bg-green-500 hover:bg-green-600 text-white font-bold text-[10px] rounded transition-all shadow-md">
+                            Cuenta y Pagar
+                        </button>
+                        
+                        <button class="px-2 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold text-[10px] rounded transition-all shadow-md">
+                            Cuenta e Imprimir
+                        </button>
+                    </div>
                 </div>
             </div>
     </div>
