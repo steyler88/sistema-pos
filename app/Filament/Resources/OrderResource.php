@@ -19,7 +19,10 @@ class OrderResource extends Resource
 
     // --- CONFIGURACIÓN VISUAL DEL MENÚ ---
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar'; 
-    protected static ?string $navigationLabel = 'Ventas / Caja'; 
+    protected static ?string $navigationLabel = 'Nueva Venta';
+    protected static ?string $modelLabel = 'Venta';
+    protected static ?string $pluralModelLabel = 'Ventas';
+    protected static ?string $navigationGroup = 'Ventas / Caja'; 
 
     public static function form(Form $form): Form
     {
@@ -361,7 +364,33 @@ class OrderResource extends Resource
         return [
             'index' => Pages\ListOrders::route('/'),
             'create' => Pages\CreateOrder::route('/create'),
+            'active' => Pages\ActiveOrders::route('/active'),
             'edit' => Pages\EditOrder::route('/{record}/edit'),
+        ];
+    }
+    
+    // Configurar submenú
+    public static function getNavigationItems(): array
+    {
+        return [
+            \Filament\Navigation\NavigationItem::make('Nueva Venta')
+                ->group(static::getNavigationGroup())
+                ->icon('heroicon-o-plus-circle')
+                ->url(static::getUrl('create'))
+                ->isActiveWhen(fn () => request()->routeIs('filament.admin.resources.orders.create')),
+            
+            \Filament\Navigation\NavigationItem::make('Órdenes Activas')
+                ->group(static::getNavigationGroup())
+                ->icon('heroicon-o-clock')
+                ->url(static::getUrl('active'))
+                ->badge(fn () => \App\Models\Order::where('status', 'pending')->count(), color: 'warning')
+                ->isActiveWhen(fn () => request()->routeIs('filament.admin.resources.orders.active')),
+            
+            \Filament\Navigation\NavigationItem::make('Historial')
+                ->group(static::getNavigationGroup())
+                ->icon('heroicon-o-clipboard-document-list')
+                ->url(static::getUrl('index'))
+                ->isActiveWhen(fn () => request()->routeIs('filament.admin.resources.orders.index')),
         ];
     }
 }

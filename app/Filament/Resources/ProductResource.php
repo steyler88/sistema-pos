@@ -16,15 +16,30 @@ class ProductResource extends Resource
     protected static ?string $model = Product::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationLabel = 'Productos';
+    protected static ?string $modelLabel = 'Producto';
+    protected static ?string $pluralModelLabel = 'Productos';
 
-    // CONFIGURACIÓN DEL FORMULARIO (Crear/Editar Pizza)
+    // CONFIGURACIÓN DEL FORMULARIO (Crear/Editar Producto)
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required()
-                    ->label('Nombre de la Pizza'),
+                    ->label('Nombre del Producto'),
+                
+                Forms\Components\Select::make('category')
+                    ->options([
+                        'Pizzas' => 'Pizzas',
+                        'Bebidas' => 'Bebidas',
+                        'Postres' => 'Postres',
+                        'Entradas' => 'Entradas',
+                        'Extras' => 'Extras',
+                    ])
+                    ->required()
+                    ->default('Pizzas')
+                    ->label('Categoría'),
                 
                 Forms\Components\TextInput::make('price')
                     ->required()
@@ -51,6 +66,18 @@ class ProductResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->label('Producto'),
+
+                Tables\Columns\BadgeColumn::make('category')
+                    ->searchable()
+                    ->sortable()
+                    ->label('Categoría')
+                    ->colors([
+                        'danger' => 'Pizzas',
+                        'warning' => 'Bebidas',
+                        'success' => 'Postres',
+                        'primary' => 'Entradas',
+                        'secondary' => 'Extras',
+                    ]),
 
                 Tables\Columns\TextColumn::make('price')
                     ->money('PEN') 
