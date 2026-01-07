@@ -24,6 +24,9 @@ class TouchPOS extends Component
     // Categoría seleccionada
     public $selectedCategory = 'Mostrar todo';
     
+    // Búsqueda
+    public $searchTerm = '';
+    
     // Total calculado
     public $total = 0;
 
@@ -178,14 +181,20 @@ class TouchPOS extends Component
             ->distinct()
             ->pluck('category');
 
-        // Si selecciona "Mostrar todo", obtener todos los productos
-        if ($this->selectedCategory === 'Mostrar todo') {
-            $products = Product::where('is_active', true)->get();
-        } else {
-            $products = Product::where('is_active', true)
-                ->where('category', $this->selectedCategory)
-                ->get();
+        // Construir query de productos
+        $query = Product::where('is_active', true);
+
+        // Filtrar por categoría
+        if ($this->selectedCategory !== 'Mostrar todo') {
+            $query->where('category', $this->selectedCategory);
         }
+
+        // Filtrar por búsqueda
+        if (!empty($this->searchTerm)) {
+            $query->where('name', 'like', '%' . $this->searchTerm . '%');
+        }
+
+        $products = $query->get();
 
         return view('livewire.touch-pos', [
             'categories' => $categories,

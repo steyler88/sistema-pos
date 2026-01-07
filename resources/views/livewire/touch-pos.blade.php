@@ -1,19 +1,32 @@
-<div class="h-screen bg-gray-50 dark:bg-gray-900 overflow-hidden flex flex-col">
+<div class="h-screen bg-white dark:bg-gray-900 flex overflow-hidden">
     
     <div class="flex flex-1 overflow-hidden">
-        <!-- SECCIÓN CENTRAL: PRODUCTOS -->
-        <div class="flex-1 flex flex-col overflow-hidden bg-white dark:bg-gray-900">
+        <!-- SECCIÓN CENTRAL: PRODUCTOS (ZONA AZUL) -->
+        <div class="flex-1 flex flex-col overflow-hidden bg-white dark:bg-gray-900 border-r-2 border-blue-500">
             
+            <!-- BUSCADOR PRINCIPAL - ESTILO IZIREST -->
+            <div class="p-4 bg-white dark:bg-gray-800 border-b-4 border-blue-600">
+                <div class="relative">
+                    <input type="text" 
+                           wire:model.live="searchTerm"
+                           placeholder="Busque su elemento de menú aquí" 
+                           class="w-full px-4 py-3 pl-10 text-base border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:bg-gray-700 dark:text-white">
+                    <svg class="absolute left-3 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+            </div>
+
             <!-- PESTAÑAS DE CATEGORÍAS - ESTILO IZIREST -->
             <div class="bg-gray-900 border-b border-gray-700">
                 <div class="flex overflow-x-auto scrollbar-hide">
                     <button wire:click="selectCategory('Mostrar todo')"
-                            class="px-6 py-4 font-semibold text-sm whitespace-nowrap transition-all {{ $selectedCategory === 'Mostrar todo' ? 'bg-black text-white border-b-2 border-orange-500' : 'text-gray-300 hover:bg-gray-800 hover:text-white' }}">
+                            class="px-6 py-3 font-bold text-xs whitespace-nowrap transition-all {{ $selectedCategory === 'Mostrar todo' ? 'bg-black text-white border-b-3 border-blue-500' : 'text-gray-300 hover:bg-gray-800 hover:text-white' }}">
                         Mostrar todo
                     </button>
                     @foreach($categories as $category)
                         <button wire:click="selectCategory('{{ $category }}')"
-                                class="px-6 py-4 font-semibold text-sm whitespace-nowrap transition-all {{ $selectedCategory === $category ? 'bg-black text-white border-b-2 border-orange-500' : 'text-gray-300 hover:bg-gray-800 hover:text-white' }}">
+                                class="px-6 py-3 font-bold text-xs whitespace-nowrap transition-all {{ $selectedCategory === $category ? 'bg-black text-white border-b-3 border-blue-500' : 'text-gray-300 hover:bg-gray-800 hover:text-white' }}">
                             {{ strtoupper($category) }}
                         </button>
                     @endforeach
@@ -21,33 +34,33 @@
             </div>
 
             <!-- GRID DE PRODUCTOS - ESTILO IZIREST -->
-            <div class="flex-1 overflow-y-auto p-4 bg-gray-50 dark:bg-gray-900">
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+            <div class="flex-1 overflow-y-auto p-3 bg-gray-50 dark:bg-gray-900">
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
                     @forelse($products as $product)
                         <button wire:click="addToCart({{ $product->id }})"
                                 class="group relative bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow hover:shadow-xl transition-all transform hover:scale-105 active:scale-95">
                             
                             <!-- Imagen del Producto -->
-                            <div class="relative h-32 bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800">
+                            <div class="relative h-28 bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800">
                                 @if($product->image)
                                     <img src="{{ Storage::url($product->image) }}" 
                                          alt="{{ $product->name }}" 
                                          class="w-full h-full object-cover">
                                 @else
                                     <div class="w-full h-full flex items-center justify-center">
-                                        <span class="text-5xl">🍕</span>
+                                        <span class="text-4xl">🍕</span>
                                     </div>
                                 @endif
                                 
                                 <!-- Badge de Precio -->
-                                <div class="absolute top-2 left-2 bg-gray-900 text-white px-3 py-1 rounded-full font-bold text-sm">
+                                <div class="absolute top-1 left-1 bg-gray-900 text-white px-2 py-1 rounded-md font-bold text-xs">
                                     S/{{ number_format($product->price, 2) }}
                                 </div>
                             </div>
                             
                             <!-- Nombre del Producto -->
-                            <div class="p-3 text-center">
-                                <p class="font-semibold text-sm text-gray-900 dark:text-white line-clamp-2">
+                            <div class="p-2 text-center bg-white dark:bg-gray-800">
+                                <p class="font-semibold text-xs text-gray-900 dark:text-white line-clamp-2">
                                     {{ $product->name }}
                                 </p>
                             </div>
@@ -63,39 +76,45 @@
             </div>
         </div>
 
-        <!-- PANEL DERECHO: DETALLES DE LA ORDEN - ESTILO IZIREST -->
-        <div class="w-96 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 flex flex-col">
+        <!-- PANEL DERECHO: DETALLES DE LA ORDEN - ESTILO IZIREST (ZONA VERDE) -->
+        <div class="w-96 bg-white dark:bg-gray-800 border-l-4 border-green-500 flex flex-col shadow-xl">
             
-            <!-- Header: Info del Pedido -->
-            <div class="bg-gradient-to-r from-orange-500 to-orange-600 p-4 text-white">
-                <div class="flex items-center justify-between mb-2">
+            <!-- Header: Info del Pedido con ícono -->
+            <div class="bg-gradient-to-r from-green-500 to-green-600 p-3 text-white flex items-center gap-3">
+                <!-- Ícono y título -->
+                <div class="flex items-center gap-2 flex-1">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/>
+                    </svg>
                     <div>
-                        <div class="text-xs opacity-90">Pedido</div>
-                        <div class="text-2xl font-black">#{{ str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT) }}</div>
-                    </div>
-                    <div class="text-right">
-                        <div class="text-xs opacity-90">{{ now()->format('d/m/Y') }}</div>
-                        <div class="text-sm font-bold">{{ now()->format('H:i') }}</div>
+                        <div class="text-xs opacity-90">CAJA COCINA</div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-lg font-bold">Saldo: S/${{ number_format($total, 2) }}</span>
+                            <span class="text-xs bg-green-700 px-2 py-0.5 rounded-full">Estado: Abierta</span>
+                        </div>
                     </div>
                 </div>
                 
-                <!-- Tipo y Ubicación -->
-                <div class="grid grid-cols-2 gap-2 mt-3">
+                <!-- Botón cambiar -->
+                <button class="text-xs bg-white bg-opacity-20 hover:bg-opacity-30 px-3 py-1 rounded transition-all">
+                    🔄 Cambiar
+                </button>
+            </div>
+
+            <!-- Tipo de Servicio (En Restaurante / Delivery / Recogida) -->
+            <div class="p-3 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+                <div class="grid grid-cols-3 gap-2 mb-2">
+                    <button wire:click="$set('order_type', 'mesa')"
+                            class="p-2 rounded text-xs font-bold transition-all flex items-center justify-center gap-1 {{ $order_type === 'mesa' ? 'bg-blue-500 text-white ring-2 ring-blue-300' : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50' }}">
+                        <span class="text-sm">🍽️</span> En Restaurante
+                    </button>
                     <button wire:click="$set('order_type', 'delivery')"
-                            class="px-3 py-2 rounded text-xs font-bold transition-all {{ $order_type === 'delivery' ? 'bg-white text-orange-600' : 'bg-orange-700 text-white hover:bg-orange-800' }}">
-                        🚚 Delivery
+                            class="p-2 rounded text-xs font-bold transition-all flex items-center justify-center gap-1 {{ $order_type === 'delivery' ? 'bg-blue-500 text-white ring-2 ring-blue-300' : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50' }}">
+                        <span class="text-sm">🚚</span> Delivery
                     </button>
                     <button wire:click="$set('order_type', 'para_llevar')"
-                            class="px-3 py-2 rounded text-xs font-bold transition-all {{ $order_type === 'para_llevar' ? 'bg-white text-orange-600' : 'bg-orange-700 text-white hover:bg-orange-800' }}">
-                        🛍️ P/Llevar
-                    </button>
-                    <button wire:click="$set('order_type', 'mesa')"
-                            class="px-3 py-2 rounded text-xs font-bold transition-all {{ $order_type === 'mesa' ? 'bg-white text-orange-600' : 'bg-orange-700 text-white hover:bg-orange-800' }}">
-                        🪑 Mesa
-                    </button>
-                    <button wire:click="$set('order_type', 'barra')"
-                            class="px-3 py-2 rounded text-xs font-bold transition-all {{ $order_type === 'barra' ? 'bg-white text-orange-600' : 'bg-orange-700 text-white hover:bg-orange-800' }}">
-                        🍺 Barra
+                            class="p-2 rounded text-xs font-bold transition-all flex items-center justify-center gap-1 {{ $order_type === 'para_llevar' ? 'bg-blue-500 text-white ring-2 ring-blue-300' : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50' }}">
+                        <span class="text-sm">🛍️</span> Recogida
                     </button>
                 </div>
 
@@ -117,11 +136,24 @@
                 @endif
             </div>
 
-            <!-- Cliente y Camarero -->
-            <div class="p-3 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
-                <div class="text-xs text-gray-600 dark:text-gray-400 mb-1">Comensales: 1</div>
-                <input wire:model="customer_name" type="text" placeholder="Cliente"
-                       class="w-full px-3 py-2 text-sm rounded border border-gray-300 dark:border-gray-600 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+            <!-- Pedido, Comensales y Camarero -->
+            <div class="px-3 py-2 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                <div class="grid grid-cols-3 gap-2 text-xs">
+                    <div>
+                        <div class="text-gray-500 mb-1">📋 Pedido #M06</div>
+                        <button class="text-blue-600 hover:text-blue-700 font-semibold">⚙️</button>
+                    </div>
+                    <div>
+                        <div class="text-gray-500 mb-1">👥 Comensales: <span class="font-bold text-gray-900 dark:text-white">1</span></div>
+                        <button class="text-blue-600 hover:text-blue-700 font-semibold">✏️</button>
+                    </div>
+                    <div>
+                        <div class="text-gray-500 mb-1">👤 Camarero:</div>
+                        <select class="text-xs border border-gray-300 rounded px-1 py-0.5 w-full">
+                            <option>Jaquelyn Battle</option>
+                        </select>
+                    </div>
+                </div>
             </div>
 
             <!-- TABLA DE ITEMS - ESTILO PRECISO IZIREST -->
@@ -237,16 +269,35 @@
                 </div>
             </div>
 
-            <!-- Botones de Acción - ESTILO IZIREST -->
-            <div class="p-3 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 grid grid-cols-2 gap-2">
-                <button wire:click="clearCart" 
-                        class="px-4 py-3 bg-gray-600 hover:bg-gray-700 text-white font-bold text-sm rounded-lg transition-all active:scale-95 shadow-lg">
-                    🗑️ Limpiar
-                </button>
-                <button wire:click="saveOrder" 
-                        class="px-4 py-3 bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white font-bold text-sm rounded-lg transition-all active:scale-95 shadow-lg">
-                    💰 COBRAR
-                </button>
+            <!-- Botones de Acción - EXACTO COMO IZIREST -->
+            <div class="p-3 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+                <!-- Primera Fila: Orden de cocina y Pre-cuenta -->
+                <div class="grid grid-cols-2 gap-2 mb-2">
+                    <button class="px-3 py-3 bg-gray-700 hover:bg-gray-800 text-white font-bold text-xs rounded transition-all">
+                        🍳 Orden de cocina
+                    </button>
+                    <button class="px-3 py-3 bg-pink-100 hover:bg-pink-200 text-pink-700 font-bold text-xs rounded transition-all border border-pink-300">
+                        🧾 Pre-cuenta
+                    </button>
+                </div>
+                
+                <!-- Segunda Fila: CUENTA grande -->
+                <div class="mb-2">
+                    <button wire:click="saveOrder" 
+                            class="w-full px-3 py-4 bg-gradient-to-r from-pink-500 to-fuchsia-600 hover:from-pink-600 hover:to-fuchsia-700 text-white font-black text-base rounded-lg transition-all active:scale-95 shadow-lg">
+                        💰 CUENTA
+                    </button>
+                </div>
+                
+                <!-- Tercera Fila: Cuenta y Pagar + Cuenta e Imprimir -->
+                <div class="grid grid-cols-2 gap-2">
+                    <button class="px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-bold text-xs rounded transition-all">
+                        💳 Cuenta y Pagar
+                    </button>
+                    <button class="px-3 py-3 bg-blue-500 hover:bg-blue-600 text-white font-bold text-xs rounded transition-all">
+                        🖨️ Cuenta e Imprimir
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -264,4 +315,5 @@
         </div>
     @endif
 </div>
+
 

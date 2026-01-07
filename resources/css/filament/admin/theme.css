@@ -1,0 +1,270 @@
+@import '/vendor/filament/filament/resources/css/theme.css';
+
+@config 'tailwind.config.js';
+
+/* ============================================
+   LAYOUT PRINCIPAL: 3 COLUMNAS (15-60-25)
+   ============================================ */
+
+/* Contenedor principal con altura completa */
+.fi-main-ctn {
+    display: flex !important;
+    min-height: 100vh !important;
+    width: 100% !important;
+}
+
+/* COLUMNA 1: SIDEBAR - 15% */
+.fi-sidebar {
+    width: 15% !important;
+    min-width: 250px !important;
+    max-width: 300px !important;
+    height: 100vh !important;
+    position: sticky !important;
+    top: 0 !important;
+    overflow-y: auto !important;
+    background: linear-gradient(180deg, #1f2937 0%, #111827 100%) !important;
+    border-right: 1px solid #374151 !important;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* COLUMNA 2: CONTENIDO CENTRAL - 60% */
+.fi-main {
+    flex: 1 !important;
+    width: 60% !important;
+    min-height: 100vh !important;
+    overflow-y: auto !important;
+    background: #f9fafb !important;
+}
+
+.dark .fi-main {
+    background: #0f172a !important;
+}
+
+/* COLUMNA 3: PANEL LATERAL DERECHO - 25% */
+.fi-sidebar-right {
+    width: 25% !important;
+    min-width: 320px !important;
+    max-width: 400px !important;
+    height: 100vh !important;
+    position: sticky !important;
+    top: 0 !important;
+    overflow-y: auto !important;
+    background: white !important;
+    border-left: 1px solid #e5e7eb !important;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.05) !important;
+}
+
+.dark .fi-sidebar-right {
+    background: #1e293b !important;
+    border-left-color: #334155 !important;
+}
+
+/* ============================================
+   TOPBAR - Barra superior
+   ============================================ */
+.fi-topbar {
+    height: 60px !important;
+    min-height: 60px !important;
+    background: linear-gradient(90deg, #f97316 0%, #ea580c 100%) !important;
+    border-bottom: 2px solid #ea580c !important;
+    box-shadow: 0 2px 10px rgba(249, 115, 22, 0.2) !important;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+/* Tablet (768px - 1024px) */
+@media (max-width: 1024px) {
+    .fi-sidebar {
+        width: 20% !important;
+        min-width: 200px !important;
+    }
+    
+    .fi-main {
+        width: 55% !important;
+    }
+    
+    .fi-sidebar-right {
+        width: 25% !important;
+        min-width: 250px !important;
+    }
+}
+
+/* Mobile (< 768px) */
+@media (max-width: 768px) {
+    .fi-main-ctn {
+        flex-direction: column !important;
+    }
+    
+    .fi-sidebar {
+        width: 100% !important;
+        height: auto !important;
+        position: relative !important;
+        min-height: 60px !important;
+    }
+    
+    .fi-main {
+        width: 100% !important;
+        min-height: calc(100vh - 60px) !important;
+    }
+    
+    .fi-sidebar-right {
+        width: 100% !important;
+        height: auto !important;
+        position: relative !important;
+        display: none !important; /* Ocultar en móvil, mostrar con toggle */
+    }
+    
+    .fi-sidebar-right.active {
+        display: block !important;
+    }
+}
+
+/* ============================================
+   SCROLL PERSONALIZADO
+   ============================================ */
+.fi-sidebar::-webkit-scrollbar,
+.fi-main::-webkit-scrollbar,
+.fi-sidebar-right::-webkit-scrollbar {
+    width: 8px;
+}
+
+.fi-sidebar::-webkit-scrollbar-track {
+    background: #1f2937;
+}
+
+.fi-sidebar::-webkit-scrollbar-thumb {
+    background: #4b5563;
+    border-radius: 4px;
+}
+
+.fi-sidebar::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
+}
+
+.fi-main::-webkit-scrollbar-track,
+.fi-sidebar-right::-webkit-scrollbar-track {
+    background: #f3f4f6;
+}
+
+.fi-main::-webkit-scrollbar-thumb,
+.fi-sidebar-right::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 4px;
+}
+
+.fi-main::-webkit-scrollbar-thumb:hover,
+.fi-sidebar-right::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
+/* ============================================
+   MEJORAS VISUALES
+   ============================================ */
+
+/* Padding del contenido principal */
+.fi-main > .fi-page {
+    padding: 1.5rem !important;
+    max-width: 100% !important;
+}
+
+/* Headers de sección */
+.fi-section-header {
+    background: white !important;
+    border-radius: 0.5rem !important;
+    padding: 1rem 1.5rem !important;
+    margin-bottom: 1rem !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+.dark .fi-section-header {
+    background: #1e293b !important;
+}
+
+/* Tablas */
+.fi-ta {
+    border-radius: 0.5rem !important;
+    overflow: hidden !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Formularios */
+.fi-fo-field-wrp {
+    margin-bottom: 1rem !important;
+}
+
+/* Botones */
+.fi-btn {
+    font-weight: 600 !important;
+    transition: all 0.2s !important;
+}
+
+.fi-btn:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Cards */
+.fi-section {
+    background: white !important;
+    border-radius: 0.75rem !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.dark .fi-section {
+    background: #1e293b !important;
+}
+
+/* ============================================
+   ANIMACIONES
+   ============================================ */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.fi-sidebar-nav-item {
+    animation: slideIn 0.3s ease-out !important;
+}
+
+/* ============================================
+   UTILIDADES
+   ============================================ */
+.h-screen-minus-topbar {
+    height: calc(100vh - 60px) !important;
+}
+
+.sticky-top {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 10 !important;
+}
+
+/* Grid de 3 columnas para contenido */
+.grid-3-cols {
+    display: grid !important;
+    grid-template-columns: 15% 60% 25% !important;
+    gap: 0 !important;
+    min-height: 100vh !important;
+}
+
+@media (max-width: 1024px) {
+    .grid-3-cols {
+        grid-template-columns: 20% 55% 25% !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .grid-3-cols {
+        grid-template-columns: 1fr !important;
+    }
+}
+
