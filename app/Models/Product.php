@@ -26,6 +26,16 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
+    /**
+     * Relación: Un producto puede estar en muchos combos
+     */
+    public function combos()
+    {
+        return $this->belongsToMany(Combo::class, 'combo_product')
+                    ->withPivot('quantity')
+                    ->withTimestamps();
+    }
+
     public function ingredients()
     {
         return $this->belongsToMany(Ingredient::class)

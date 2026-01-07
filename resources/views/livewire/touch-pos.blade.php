@@ -16,17 +16,27 @@
                 </div>
             </div>
 
-            <!-- PESTAÑAS DE CATEGORÍAS - ESTILO IZIREST -->
+            <!-- PESTAÑAS: COMBOS + CATEGORÍAS -->
             <div class="bg-gray-900 border-b border-gray-700">
                 <div class="flex overflow-x-auto scrollbar-hide">
+                    <!-- PESTAÑA DE COMBOS - DESTACADA -->
+                    <button wire:click="showCombos"
+                            class="px-6 py-3 font-bold text-xs whitespace-nowrap transition-all flex items-center gap-2 {{ $selectedView === 'combos' ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg' : 'bg-gradient-to-r from-orange-600 to-red-600 text-white hover:from-orange-500 hover:to-red-500' }}">
+                        <span class="text-base">🎁</span> COMBOS
+                    </button>
+                    
+                    <!-- SEPARADOR -->
+                    <div class="w-px bg-gray-700 my-2"></div>
+                    
+                    <!-- CATEGORÍAS -->
                     <button wire:click="selectCategory('Mostrar todo')"
-                            class="px-6 py-3 font-bold text-xs whitespace-nowrap transition-all flex items-center gap-2 {{ $selectedCategory === 'Mostrar todo' ? 'bg-black text-white border-b-3 border-blue-500' : 'text-gray-300 hover:bg-gray-800 hover:text-white' }}">
+                            class="px-6 py-3 font-bold text-xs whitespace-nowrap transition-all flex items-center gap-2 {{ ($selectedView === 'categories' && $selectedCategory === 'Mostrar todo') ? 'bg-black text-white border-b-3 border-blue-500' : 'text-gray-300 hover:bg-gray-800 hover:text-white' }}">
                         <span class="text-base">📋</span> MOSTRAR TODO
                     </button>
                     @foreach($categories as $category)
                         <button wire:click="selectCategory('{{ $category->name }}')"
-                                class="px-6 py-3 font-bold text-xs whitespace-nowrap transition-all flex items-center gap-2 {{ $selectedCategory === $category->name ? 'bg-black text-white border-b-3 border-blue-500' : 'text-gray-300 hover:bg-gray-800 hover:text-white' }}"
-                                style="border-color: {{ $selectedCategory === $category->name ? $category->color : 'transparent' }};">
+                                class="px-6 py-3 font-bold text-xs whitespace-nowrap transition-all flex items-center gap-2 {{ ($selectedView === 'categories' && $selectedCategory === $category->name) ? 'bg-black text-white border-b-3 border-blue-500' : 'text-gray-300 hover:bg-gray-800 hover:text-white' }}"
+                                style="border-color: {{ ($selectedView === 'categories' && $selectedCategory === $category->name) ? $category->color : 'transparent' }};">
                             @if($category->icon)
                                 <span class="text-base">{{ $category->icon }}</span>
                             @endif
@@ -36,46 +46,105 @@
                 </div>
             </div>
 
-            <!-- GRID DE PRODUCTOS - ESTILO IZIREST CON SCROLL -->
+            <!-- GRID DE PRODUCTOS O COMBOS -->
             <div class="flex-1 overflow-y-auto p-3 bg-gray-50 dark:bg-gray-900" style="max-height: calc(100vh - 200px);">
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
-                    @forelse($products as $product)
-                        <button wire:click="addToCart({{ $product->id }})"
-                                class="group relative bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow hover:shadow-xl transition-all transform hover:scale-105 active:scale-95">
-                            
-                            <!-- Imagen del Producto -->
-                            <div class="relative h-28 bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800">
-                                @if($product->image)
-                                    <img src="{{ asset('storage/' . $product->image) }}" 
-                                         alt="{{ $product->name }}" 
-                                         class="w-full h-full object-cover"
-                                         onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center\'><span class=\'text-4xl\'>🍕</span></div>';">
-                                @else
-                                    <div class="w-full h-full flex items-center justify-center">
-                                        <span class="text-4xl">🍕</span>
-                                    </div>
-                                @endif
+                    @if($isComboView ?? false)
+                        <!-- VISTA DE COMBOS -->
+                        @forelse($items as $combo)
+                            <button wire:click="addComboToCart({{ $combo->id }})"
+                                    class="group relative bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 active:scale-95 border-2 border-orange-300 dark:border-orange-700">
                                 
-                                <!-- Badge de Precio -->
-                                <div class="absolute top-1 left-1 bg-gray-900 text-white px-2 py-1 rounded-md font-bold text-xs">
-                                    S/{{ number_format($product->price, 2) }}
+                                <!-- Badge "COMBO" -->
+                                <div class="absolute top-1 right-1 bg-gradient-to-r from-orange-500 to-red-500 text-white px-2 py-0.5 rounded-full font-black text-[9px] shadow-md z-10">
+                                    🎁 COMBO
                                 </div>
+                                
+                                <!-- Imagen del Combo -->
+                                <div class="relative h-28 bg-gradient-to-br from-orange-200 to-red-200 dark:from-orange-800 dark:to-red-800">
+                                    @if($combo->image)
+                                        <img src="{{ asset('storage/' . $combo->image) }}" 
+                                             alt="{{ $combo->name }}" 
+                                             class="w-full h-full object-cover"
+                                             onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center\'><span class=\'text-5xl\'>🎁</span></div>';">
+                                    @else
+                                        <div class="w-full h-full flex items-center justify-center">
+                                            <span class="text-5xl">🎁</span>
+                                        </div>
+                                    @endif
+                                    
+                                    <!-- Badge de Precio -->
+                                    <div class="absolute bottom-1 left-1 bg-green-600 text-white px-2 py-1 rounded-md font-bold text-xs shadow-md">
+                                        S/{{ number_format($combo->price, 2) }}
+                                    </div>
+                                    
+                                    <!-- Badge de Ahorro -->
+                                    @if($combo->savings > 0)
+                                    <div class="absolute bottom-1 right-1 bg-yellow-400 text-gray-900 px-2 py-0.5 rounded-md font-bold text-[9px] shadow-md">
+                                        ¡Ahorro S/{{ number_format($combo->savings, 2) }}!
+                                    </div>
+                                    @endif
+                                </div>
+                                
+                                <!-- Nombre del Combo -->
+                                <div class="p-2 text-center bg-white dark:bg-gray-800 border-t-2 border-orange-300 dark:border-orange-700">
+                                    <p class="font-bold text-xs text-gray-900 dark:text-white line-clamp-2">
+                                        {{ $combo->name }}
+                                    </p>
+                                    @if($combo->products_count > 0)
+                                    <p class="text-[9px] text-orange-600 dark:text-orange-400 mt-0.5">
+                                        {{ $combo->products_count }} productos
+                                    </p>
+                                    @endif
+                                </div>
+                            </button>
+                        @empty
+                            <div class="col-span-full text-center py-12 text-gray-500">
+                                <div class="text-6xl mb-4">🎁</div>
+                                <p class="text-lg font-semibold">No hay combos disponibles</p>
+                                <p class="text-sm">Crea combos desde el menú "Combos"</p>
                             </div>
-                            
-                            <!-- Nombre del Producto -->
-                            <div class="p-2 text-center bg-white dark:bg-gray-800">
-                                <p class="font-semibold text-xs text-gray-900 dark:text-white line-clamp-2">
-                                    {{ $product->name }}
-                                </p>
+                        @endforelse
+                    @else
+                        <!-- VISTA DE PRODUCTOS -->
+                        @forelse($items as $product)
+                            <button wire:click="addToCart({{ $product->id }})"
+                                    class="group relative bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow hover:shadow-xl transition-all transform hover:scale-105 active:scale-95">
+                                
+                                <!-- Imagen del Producto -->
+                                <div class="relative h-28 bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800">
+                                    @if($product->image)
+                                        <img src="{{ asset('storage/' . $product->image) }}" 
+                                             alt="{{ $product->name }}" 
+                                             class="w-full h-full object-cover"
+                                             onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center\'><span class=\'text-4xl\'>🍕</span></div>';">
+                                    @else
+                                        <div class="w-full h-full flex items-center justify-center">
+                                            <span class="text-4xl">🍕</span>
+                                        </div>
+                                    @endif
+                                    
+                                    <!-- Badge de Precio -->
+                                    <div class="absolute top-1 left-1 bg-gray-900 text-white px-2 py-1 rounded-md font-bold text-xs">
+                                        S/{{ number_format($product->price, 2) }}
+                                    </div>
+                                </div>
+                                
+                                <!-- Nombre del Producto -->
+                                <div class="p-2 text-center bg-white dark:bg-gray-800">
+                                    <p class="font-semibold text-xs text-gray-900 dark:text-white line-clamp-2">
+                                        {{ $product->name }}
+                                    </p>
+                                </div>
+                            </button>
+                        @empty
+                            <div class="col-span-full text-center py-12 text-gray-500">
+                                <div class="text-6xl mb-4">📦</div>
+                                <p class="text-lg font-semibold">No hay productos disponibles</p>
+                                <p class="text-sm">Agrega productos desde el menú "Productos"</p>
                             </div>
-                        </button>
-                    @empty
-                        <div class="col-span-full text-center py-12 text-gray-500">
-                            <div class="text-6xl mb-4">📦</div>
-                            <p class="text-lg font-semibold">No hay productos disponibles</p>
-                            <p class="text-sm">Agrega productos desde el menú "Productos"</p>
-                        </div>
-                    @endforelse
+                        @endforelse
+                    @endif
                 </div>
             </div>
     </div>

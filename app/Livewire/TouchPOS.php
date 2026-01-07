@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Category;
+use App\Models\Combo;
 use Illuminate\Support\Facades\DB;
 
 class TouchPOS extends Component
@@ -24,6 +25,9 @@ class TouchPOS extends Component
     
     // Categoría seleccionada
     public $selectedCategory = 'Mostrar todo';
+    
+    // Vista seleccionada (categorias o combos)
+    public $selectedView = 'categories'; // 'categories' o 'combos'
     
     // Búsqueda
     public $searchTerm = '';
@@ -141,6 +145,44 @@ class TouchPOS extends Component
     public function selectCategory($category)
     {
         $this->selectedCategory = $category;
+        $this->selectedView = 'categories';
+    }
+    
+    /**
+     * Cambiar a vista de combos
+     */
+    public function showCombos()
+    {
+        $this->selectedView = 'combos';
+        $this->selectedCategory = 'Mostrar todo';
+    }
+    
+    /**
+     * Agregar combo al carrito
+     */
+    public function addComboToCart($comboId)
+    {
+        $combo = Combo::with('products')->find($comboId);
+        
+        if (!$combo) return;
+
+        $cartKey = 'combo_' . $comboId;
+
+        if (isset($this->cart[$cartKey])) {
+            // Si ya existe, aumentar cantidad
+            $this->cart[$cartKey]['quantity']++;
+        } else {
+            // Si no existe, agregar nuevo
+            $this->cart[$cartKey] = [
+                'combo_id' => $combo->id,
+                'name' => '🎁 ' . $combo->name,
+                'price' => $combo->price,
+                'quantity' => 1,
+                'is_combo' => true,
+            ];
+        }
+
+        $this->calculateTotal();
     }
 
     /**
@@ -213,7 +255,33 @@ class TouchPOS extends Component
             ->orderBy('name', 'asc')
             ->get();
 
-        // Construir query de productos
+        // Obtener combos activos
+        $combos = Combo::where('is_active', true)
+            ->orderBy('order', 'asc')
+            ->orderBy('name', 'asc')
+            ->get();
+
+        // Si estamos en vista de combos
+        if ($this->selectedView === 'combos') {
+            $query = Combo::where('is_active', true);
+            
+            // Filtrar por búsqueda
+            if (!empty($this->searchTerm)) {
+                $query->where('name', 'like', '%' . $this->searchTerm . '%');
+            }
+            
+            $items = $query->get();
+            
+            return view('livewire.touch-pos', [
+                'categories' => $categories,
+                'combos' => $combos,
+                'products' => collect(), // Colección vacía
+                'items' => $items, // Los combos para mostrar
+                'isComboView' => true,
+            ]);
+        }
+
+        // Vista normal de productos
         $query = Product::where('is_active', true)
             ->with('category'); // Cargar la relación
 
@@ -233,7 +301,10 @@ class TouchPOS extends Component
 
         return view('livewire.touch-pos', [
             'categories' => $categories,
+            'combos' => $combos,
             'products' => $products,
+            'items' => $products, // Los productos para mostrar
+            'isComboView' => false,
         ]);
     }
 }
