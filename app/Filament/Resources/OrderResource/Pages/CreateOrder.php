@@ -11,7 +11,7 @@ class CreateOrder extends Page
     
     protected static string $view = 'filament.resources.orders.create-touch-pos';
     
-    protected static ?string $title = 'Nueva Venta - POS Táctil';
+    protected static ?string $title = '';
     
     // Eliminar breadcrumbs para vista completa
     public function getBreadcrumbs(): array

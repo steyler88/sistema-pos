@@ -22,11 +22,11 @@ body {
     width: 100%;
 }
 
-/* COLUMNA 1: SIDEBAR IZQUIERDO - 15% */
+/* COLUMNA 1: SIDEBAR IZQUIERDO - Ancho fijo */
 .fi-sidebar-nav {
-    width: 15% !important;
+    width: var(--sidebar-width) !important;
     min-width: var(--sidebar-width) !important;
-    max-width: 300px !important;
+    max-width: var(--sidebar-width) !important;
     height: 100vh !important;
     position: sticky !important;
     top: 0 !important;
@@ -36,14 +36,21 @@ body {
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1) !important;
 }
 
-/* COLUMNA 2: CONTENIDO CENTRAL - 60% */
+/* COLUMNA 2: CONTENIDO CENTRAL - Ocupa el resto del espacio (85%) */
 .fi-main {
     flex: 1 !important;
-    width: 60% !important;
     min-height: 100vh !important;
     overflow-y: auto !important;
     background: #f9fafb !important;
     padding: 1.5rem !important;
+}
+
+/* Sin padding para página del POS */
+.fi-resource-create-record-page .fi-main,
+.fi-resource-create-record-page .fi-page {
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
 }
 
 .dark .fi-main {

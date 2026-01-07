@@ -1,8 +1,7 @@
-<div class="h-screen bg-white dark:bg-gray-900 flex overflow-hidden">
+<div class="h-screen bg-white dark:bg-gray-900 flex overflow-hidden w-full m-0 p-0">
     
-    <div class="flex flex-1 overflow-hidden">
-        <!-- SECCIÓN CENTRAL: PRODUCTOS (ZONA AZUL) -->
-        <div class="flex-1 flex flex-col overflow-hidden bg-white dark:bg-gray-900 border-r-2 border-blue-500">
+    <!-- SECCIÓN CENTRAL: PRODUCTOS (ZONA AZUL) - Ocupa todo el espacio disponible -->
+    <div class="flex-1 flex flex-col overflow-hidden bg-white dark:bg-gray-900 border-r-2 border-blue-500">
             
             <!-- BUSCADOR PRINCIPAL - ESTILO IZIREST -->
             <div class="p-4 bg-white dark:bg-gray-800 border-b-4 border-blue-600">
@@ -33,8 +32,8 @@
                 </div>
             </div>
 
-            <!-- GRID DE PRODUCTOS - ESTILO IZIREST -->
-            <div class="flex-1 overflow-y-auto p-3 bg-gray-50 dark:bg-gray-900">
+            <!-- GRID DE PRODUCTOS - ESTILO IZIREST CON SCROLL -->
+            <div class="flex-1 overflow-y-auto p-3 bg-gray-50 dark:bg-gray-900" style="max-height: calc(100vh - 200px);">
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
                     @forelse($products as $product)
                         <button wire:click="addToCart({{ $product->id }})"
@@ -43,9 +42,10 @@
                             <!-- Imagen del Producto -->
                             <div class="relative h-28 bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800">
                                 @if($product->image)
-                                    <img src="{{ Storage::url($product->image) }}" 
+                                    <img src="{{ asset('storage/' . $product->image) }}" 
                                          alt="{{ $product->name }}" 
-                                         class="w-full h-full object-cover">
+                                         class="w-full h-full object-cover"
+                                         onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center\'><span class=\'text-4xl\'>🍕</span></div>';">
                                 @else
                                     <div class="w-full h-full flex items-center justify-center">
                                         <span class="text-4xl">🍕</span>
@@ -74,10 +74,10 @@
                     @endforelse
                 </div>
             </div>
-        </div>
+    </div>
 
-        <!-- PANEL DERECHO: DETALLES DE LA ORDEN - ESTILO IZIREST (ZONA VERDE) -->
-        <div class="w-96 bg-white dark:bg-gray-800 border-l-4 border-green-500 flex flex-col shadow-xl">
+    <!-- PANEL DERECHO: DETALLES DE LA ORDEN - ESTILO IZIREST (ZONA VERDE) - Ancho fijo optimizado -->
+    <div class="w-96 bg-white dark:bg-gray-800 border-l-4 border-green-500 flex flex-col shadow-xl overflow-hidden">
             
             <!-- Header: Info del Pedido con ícono -->
             <div class="bg-gradient-to-r from-green-500 to-green-600 p-3 text-white flex items-center gap-3">
@@ -103,33 +103,33 @@
 
             <!-- Tipo de Servicio (En Restaurante / Delivery / Recogida) -->
             <div class="p-3 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
-                <div class="grid grid-cols-3 gap-2 mb-2">
+                <div class="flex flex-col gap-2 mb-2">
                     <button wire:click="$set('order_type', 'mesa')"
-                            class="p-2 rounded text-xs font-bold transition-all flex items-center justify-center gap-1 {{ $order_type === 'mesa' ? 'bg-blue-500 text-white ring-2 ring-blue-300' : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50' }}">
-                        <span class="text-sm">🍽️</span> En Restaurante
+                            class="p-2 rounded text-xs font-bold transition-all flex items-center justify-center gap-2 {{ $order_type === 'mesa' ? 'bg-blue-500 text-white ring-2 ring-blue-300' : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50' }}">
+                        <span class="text-base">🍽️</span> <span>En Restaurante</span>
                     </button>
                     <button wire:click="$set('order_type', 'delivery')"
-                            class="p-2 rounded text-xs font-bold transition-all flex items-center justify-center gap-1 {{ $order_type === 'delivery' ? 'bg-blue-500 text-white ring-2 ring-blue-300' : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50' }}">
-                        <span class="text-sm">🚚</span> Delivery
+                            class="p-2 rounded text-xs font-bold transition-all flex items-center justify-center gap-2 {{ $order_type === 'delivery' ? 'bg-blue-500 text-white ring-2 ring-blue-300' : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50' }}">
+                        <span class="text-base">🚚</span> <span>Delivery</span>
                     </button>
                     <button wire:click="$set('order_type', 'para_llevar')"
-                            class="p-2 rounded text-xs font-bold transition-all flex items-center justify-center gap-1 {{ $order_type === 'para_llevar' ? 'bg-blue-500 text-white ring-2 ring-blue-300' : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50' }}">
-                        <span class="text-sm">🛍️</span> Recogida
+                            class="p-2 rounded text-xs font-bold transition-all flex items-center justify-center gap-2 {{ $order_type === 'para_llevar' ? 'bg-blue-500 text-white ring-2 ring-blue-300' : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50' }}">
+                        <span class="text-base">🛍️</span> <span>Recogida</span>
                     </button>
                 </div>
 
                 @if(in_array($order_type, ['mesa', 'barra']))
-                    <div class="grid grid-cols-3 gap-2 mt-2">
+                    <div class="flex gap-2 mt-2">
                         <button wire:click="$set('table_location', 'Mesa 1')"
-                                class="px-2 py-1 rounded text-xs font-bold {{ $table_location === 'Mesa 1' ? 'bg-white text-orange-600' : 'bg-orange-700 text-white' }}">
+                                class="flex-1 px-2 py-1.5 rounded text-xs font-bold {{ $table_location === 'Mesa 1' ? 'bg-orange-500 text-white' : 'bg-white text-gray-700 border border-gray-300' }}">
                             Mesa 1
                         </button>
                         <button wire:click="$set('table_location', 'Mesa 2')"
-                                class="px-2 py-1 rounded text-xs font-bold {{ $table_location === 'Mesa 2' ? 'bg-white text-orange-600' : 'bg-orange-700 text-white' }}">
+                                class="flex-1 px-2 py-1.5 rounded text-xs font-bold {{ $table_location === 'Mesa 2' ? 'bg-orange-500 text-white' : 'bg-white text-gray-700 border border-gray-300' }}">
                             Mesa 2
                         </button>
                         <button wire:click="$set('table_location', 'Barra')"
-                                class="px-2 py-1 rounded text-xs font-bold {{ $table_location === 'Barra' ? 'bg-white text-orange-600' : 'bg-orange-700 text-white' }}">
+                                class="flex-1 px-2 py-1.5 rounded text-xs font-bold {{ $table_location === 'Barra' ? 'bg-orange-500 text-white' : 'bg-white text-gray-700 border border-gray-300' }}">
                             Barra
                         </button>
                     </div>
@@ -138,26 +138,26 @@
 
             <!-- Pedido, Comensales y Camarero -->
             <div class="px-3 py-2 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-                <div class="grid grid-cols-3 gap-2 text-xs">
-                    <div>
-                        <div class="text-gray-500 mb-1">📋 Pedido #M06</div>
+                <div class="space-y-2 text-xs">
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-500">📋 Pedido #M06</span>
                         <button class="text-blue-600 hover:text-blue-700 font-semibold">⚙️</button>
                     </div>
-                    <div>
-                        <div class="text-gray-500 mb-1">👥 Comensales: <span class="font-bold text-gray-900 dark:text-white">1</span></div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-500">👥 Comensales: <span class="font-bold text-gray-900 dark:text-white">1</span></span>
                         <button class="text-blue-600 hover:text-blue-700 font-semibold">✏️</button>
                     </div>
                     <div>
                         <div class="text-gray-500 mb-1">👤 Camarero:</div>
-                        <select class="text-xs border border-gray-300 rounded px-1 py-0.5 w-full">
+                        <select class="text-xs border border-gray-300 dark:border-gray-600 rounded px-2 py-1 w-full dark:bg-gray-700">
                             <option>Jaquelyn Battle</option>
                         </select>
                     </div>
                 </div>
             </div>
 
-            <!-- TABLA DE ITEMS - ESTILO PRECISO IZIREST -->
-            <div class="flex-1 overflow-y-auto bg-white dark:bg-gray-800">
+            <!-- TABLA DE ITEMS - ESTILO PRECISO IZIREST CON SCROLL -->
+            <div class="flex-1 overflow-y-auto bg-white dark:bg-gray-800" style="max-height: calc(100vh - 500px);">
                 
                 <!-- Encabezado de Tabla -->
                 <div class="sticky top-0 bg-gray-100 dark:bg-gray-700 grid grid-cols-12 gap-2 px-3 py-2 text-xs font-bold text-gray-700 dark:text-gray-300 border-b border-gray-300 dark:border-gray-600">
@@ -251,19 +251,19 @@
 
                 <!-- Forma de Pago -->
                 <div class="px-4 pb-3">
-                    <div class="text-xs text-gray-600 dark:text-gray-400 mb-2">Forma de Pago:</div>
-                    <div class="grid grid-cols-3 gap-2">
+                    <div class="text-xs text-gray-600 dark:text-gray-400 mb-2 font-semibold">Forma de Pago:</div>
+                    <div class="flex flex-col gap-2">
                         <button wire:click="$set('payment_method', 'yape')"
-                                class="px-3 py-2 rounded text-xs font-bold transition-all {{ $payment_method === 'yape' ? 'bg-green-500 text-white ring-2 ring-green-300' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300' }}">
-                            📱 Yape
+                                class="px-3 py-2.5 rounded text-xs font-bold transition-all flex items-center justify-center gap-2 {{ $payment_method === 'yape' ? 'bg-green-500 text-white ring-2 ring-green-300' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300' }}">
+                            <span class="text-base">📱</span> <span>Yape</span>
                         </button>
                         <button wire:click="$set('payment_method', 'cash')"
-                                class="px-3 py-2 rounded text-xs font-bold transition-all {{ $payment_method === 'cash' ? 'bg-yellow-500 text-white ring-2 ring-yellow-300' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300' }}">
-                            💵 Efectivo
+                                class="px-3 py-2.5 rounded text-xs font-bold transition-all flex items-center justify-center gap-2 {{ $payment_method === 'cash' ? 'bg-yellow-500 text-white ring-2 ring-yellow-300' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300' }}">
+                            <span class="text-base">💵</span> <span>Efectivo</span>
                         </button>
                         <button wire:click="$set('payment_method', 'card')"
-                                class="px-3 py-2 rounded text-xs font-bold transition-all {{ $payment_method === 'card' ? 'bg-blue-500 text-white ring-2 ring-blue-300' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300' }}">
-                            💳 Tarjeta
+                                class="px-3 py-2.5 rounded text-xs font-bold transition-all flex items-center justify-center gap-2 {{ $payment_method === 'card' ? 'bg-blue-500 text-white ring-2 ring-blue-300' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300' }}">
+                            <span class="text-base">💳</span> <span>Tarjeta</span>
                         </button>
                     </div>
                 </div>
@@ -299,7 +299,6 @@
                     </button>
                 </div>
             </div>
-        </div>
     </div>
 
     <!-- Mensajes Flash -->
