@@ -9,6 +9,7 @@
         .fi-main {
             padding: 0 !important;
             margin: 0 !important;
+            overflow-y: auto !important; /* Permitir scroll */
         }
         
         .fi-page {
@@ -30,6 +31,7 @@
             margin: 0 !important;
             width: 100% !important;
             max-width: 100% !important;
+            overflow-y: auto !important; /* Permitir scroll */
         }
     </style>
     

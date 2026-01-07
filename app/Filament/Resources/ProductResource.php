@@ -15,10 +15,12 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
     protected static ?string $navigationLabel = 'Productos';
     protected static ?string $modelLabel = 'Producto';
     protected static ?string $pluralModelLabel = 'Productos';
+    protected static ?string $navigationGroup = 'Productos';
+    protected static ?int $navigationSort = 2;
 
     // CONFIGURACIÓN DEL FORMULARIO (Crear/Editar Producto)
     public static function form(Form $form): Form
@@ -29,17 +31,31 @@ class ProductResource extends Resource
                     ->required()
                     ->label('Nombre del Producto'),
                 
-                Forms\Components\Select::make('category')
-                    ->options([
-                        'Pizzas' => 'Pizzas',
-                        'Bebidas' => 'Bebidas',
-                        'Postres' => 'Postres',
-                        'Entradas' => 'Entradas',
-                        'Extras' => 'Extras',
-                    ])
+                Forms\Components\Select::make('category_id')
+                    ->relationship('category', 'name')
+                    ->searchable()
+                    ->preload()
                     ->required()
-                    ->default('Pizzas')
-                    ->label('Categoría'),
+                    ->createOptionForm([
+                        Forms\Components\TextInput::make('name')
+                            ->label('Nombre')
+                            ->required()
+                            ->unique()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('icon')
+                            ->label('Icono (Emoji)')
+                            ->maxLength(10)
+                            ->placeholder('🍕'),
+                        Forms\Components\ColorPicker::make('color')
+                            ->label('Color')
+                            ->default('#3b82f6'),
+                        Forms\Components\TextInput::make('order')
+                            ->label('Orden')
+                            ->numeric()
+                            ->default(0),
+                    ])
+                    ->label('Categoría')
+                    ->helperText('Selecciona una categoría o crea una nueva'),
                 
                 Forms\Components\TextInput::make('price')
                     ->required()
@@ -67,17 +83,12 @@ class ProductResource extends Resource
                     ->sortable()
                     ->label('Producto'),
 
-                Tables\Columns\BadgeColumn::make('category')
+                Tables\Columns\TextColumn::make('category.name')
                     ->searchable()
                     ->sortable()
                     ->label('Categoría')
-                    ->colors([
-                        'danger' => 'Pizzas',
-                        'warning' => 'Bebidas',
-                        'success' => 'Postres',
-                        'primary' => 'Entradas',
-                        'secondary' => 'Extras',
-                    ]),
+                    ->badge()
+                    ->color(fn ($record) => $record->category?->color ?? 'gray'),
 
                 Tables\Columns\TextColumn::make('price')
                     ->money('PEN') 

@@ -13,7 +13,8 @@
 
 /* Contenedor principal con layout de 3 columnas */
 body {
-    overflow: hidden;
+    overflow-x: hidden; /* Solo ocultar scroll horizontal */
+    overflow-y: auto; /* Permitir scroll vertical */
 }
 
 .fi-layout {
@@ -28,8 +29,6 @@ body {
     min-width: var(--sidebar-width) !important;
     max-width: var(--sidebar-width) !important;
     height: 100vh !important;
-    position: sticky !important;
-    top: 0 !important;
     overflow-y: auto !important;
     background: linear-gradient(180deg, #1f2937 0%, #111827 100%) !important;
     border-right: 1px solid #374151 !important;
@@ -50,7 +49,7 @@ body {
 .fi-resource-create-record-page .fi-page {
     padding: 0 !important;
     margin: 0 !important;
-    overflow: hidden !important;
+    overflow-y: auto !important; /* Permitir scroll vertical */
 }
 
 .dark .fi-main {

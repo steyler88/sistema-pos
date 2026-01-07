@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\Product;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Category;
 use Illuminate\Support\Facades\DB;
 
 class TouchPOS extends Component
@@ -29,6 +30,9 @@ class TouchPOS extends Component
     
     // Total calculado
     public $total = 0;
+    public $subtotal = 0;
+    public $discount = 0;
+    public $showDiscountInput = false;
 
     /**
      * Agregar producto al carrito
@@ -98,9 +102,37 @@ class TouchPOS extends Component
      */
     public function calculateTotal()
     {
-        $this->total = collect($this->cart)->sum(function ($item) {
+        $this->subtotal = collect($this->cart)->sum(function ($item) {
             return $item['quantity'] * $item['price'];
         });
+        
+        $this->total = $this->subtotal - $this->discount;
+    }
+    
+    /**
+     * Aplicar descuento
+     */
+    public function applyDiscount()
+    {
+        if ($this->discount < 0) {
+            $this->discount = 0;
+        }
+        
+        if ($this->discount > $this->subtotal) {
+            $this->discount = $this->subtotal;
+        }
+        
+        $this->calculateTotal();
+        $this->showDiscountInput = false;
+    }
+    
+    /**
+     * Eliminar descuento
+     */
+    public function removeDiscount()
+    {
+        $this->discount = 0;
+        $this->calculateTotal();
     }
 
     /**
@@ -175,18 +207,21 @@ class TouchPOS extends Component
      */
     public function render()
     {
-        // Obtener productos por categoría
-        $categories = Product::where('is_active', true)
-            ->select('category')
-            ->distinct()
-            ->pluck('category');
+        // Obtener categorías activas ordenadas
+        $categories = Category::where('is_active', true)
+            ->orderBy('order', 'asc')
+            ->orderBy('name', 'asc')
+            ->get();
 
         // Construir query de productos
-        $query = Product::where('is_active', true);
+        $query = Product::where('is_active', true)
+            ->with('category'); // Cargar la relación
 
         // Filtrar por categoría
         if ($this->selectedCategory !== 'Mostrar todo') {
-            $query->where('category', $this->selectedCategory);
+            $query->whereHas('category', function($q) {
+                $q->where('name', $this->selectedCategory);
+            });
         }
 
         // Filtrar por búsqueda
