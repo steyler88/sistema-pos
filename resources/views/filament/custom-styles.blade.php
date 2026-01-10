@@ -207,5 +207,38 @@ body {
 * {
     transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
+
+/* ============================================
+   FIX PARA GRIDS EN EL PANEL DE CAJA
+   ============================================ */
+/* Forzar que los grids funcionen correctamente */
+.grid {
+    display: grid !important;
+}
+
+.grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+.grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+}
+
+.grid-cols-12 {
+    grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+}
+
+/* Columnas específicas del grid de 12 columnas */
+.col-span-2 {
+    grid-column: span 2 / span 2 !important;
+}
+
+.col-span-3 {
+    grid-column: span 3 / span 3 !important;
+}
+
+.col-span-4 {
+    grid-column: span 4 / span 4 !important;
+}
 </style>
 

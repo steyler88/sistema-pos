@@ -149,8 +149,8 @@
             </div>
     </div>
 
-    <!-- PANEL DERECHO: DETALLES DE LA ORDEN - ESTILO IZIREST (ZONA VERDE) - Ancho fijo optimizado -->
-    <div class="w-96 bg-white dark:bg-gray-800 border-l-4 border-green-500 flex flex-col shadow-xl">
+    <!-- PANEL DERECHO: DETALLES DE LA ORDEN (ZONA VERDE) - Ancho fijo optimizado -->
+    <div class="w-96 bg-white dark:bg-gray-800 border-l-4 border-green-500 shadow-xl overflow-y-auto h-screen">
             
             <!-- Header: Info del Pedido con ícono -->
             <div class="bg-gradient-to-r from-green-500 to-green-600 p-3 text-white flex items-center gap-3">
@@ -175,19 +175,19 @@
             </div>
 
             <!-- Tipo de Servicio (En Restaurante / Delivery / Recogida) - HORIZONTAL -->
-            <div class="p-2 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+<div class="p-2 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
                 <div class="flex gap-2">
                     <button wire:click="$set('order_type', 'mesa')"
-                            class="flex-1 px-2 py-2 rounded text-xs font-bold transition-all {{ $order_type === 'mesa' ? 'bg-blue-500 text-white shadow-lg' : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 hover:bg-blue-100' }}">
-                        En Restaurante
+                            class="flex-1 px-3 py-2 rounded-lg text-xs font-semibold transition-all border-2 {{ $order_type === 'mesa' ? 'bg-blue-500 text-white border-blue-500' : 'bg-transparent text-blue-500 border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20' }}">
+                        Mesa
                     </button>
                     <button wire:click="$set('order_type', 'delivery')"
-                            class="flex-1 px-2 py-2 rounded text-xs font-bold transition-all {{ $order_type === 'delivery' ? 'bg-blue-500 text-white shadow-lg' : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 hover:bg-blue-100' }}">
+                            class="flex-1 px-3 py-2 rounded-lg text-xs font-semibold transition-all border-2 {{ $order_type === 'delivery' ? 'bg-green-500 text-white border-green-500' : 'bg-transparent text-green-600 border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20' }}">
                         Delivery
                     </button>
                     <button wire:click="$set('order_type', 'para_llevar')"
-                            class="flex-1 px-2 py-2 rounded text-xs font-bold transition-all {{ $order_type === 'para_llevar' ? 'bg-blue-500 text-white shadow-lg' : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 hover:bg-blue-100' }}">
-                        Recogida
+                            class="flex-1 px-3 py-2 rounded-lg text-xs font-semibold transition-all border-2 {{ $order_type === 'para_llevar' ? 'bg-orange-500 text-white border-orange-500' : 'bg-transparent text-orange-600 border-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20' }}">
+                        Para Llevar
                     </button>
                 </div>
             </div>
@@ -383,66 +383,60 @@
                 <!-- Forma de Pago - HORIZONTAL -->
                 <div class="px-2 pb-2 border-t border-gray-200 dark:border-gray-700 pt-2">
                     <div class="text-[10px] text-gray-600 dark:text-gray-400 mb-1 font-semibold">Forma de Pago:</div>
-                    <div class="flex gap-1">
+                    <div class="flex gap-2">
                         <button wire:click="$set('payment_method', 'yape')"
-                                class="flex-1 px-2 py-1.5 rounded text-xs font-bold transition-all {{ $payment_method === 'yape' ? 'bg-green-500 text-white shadow-lg' : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600' }}">
+                                class="flex-1 px-3 py-2 rounded-lg text-xs font-semibold transition-all border-2 {{ $payment_method === 'yape' ? 'bg-purple-500 text-white border-purple-500' : 'bg-transparent text-purple-600 border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20' }}">
                             Yape
                         </button>
                         <button wire:click="$set('payment_method', 'cash')"
-                                class="flex-1 px-2 py-1.5 rounded text-xs font-bold transition-all {{ $payment_method === 'cash' ? 'bg-green-500 text-white shadow-lg' : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600' }}">
+                                class="flex-1 px-3 py-2 rounded-lg text-xs font-semibold transition-all border-2 {{ $payment_method === 'cash' ? 'bg-emerald-500 text-white border-emerald-500' : 'bg-transparent text-emerald-600 border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20' }}">
                             Efectivo
                         </button>
                         <button wire:click="$set('payment_method', 'card')"
-                                class="flex-1 px-2 py-1.5 rounded text-xs font-bold transition-all {{ $payment_method === 'card' ? 'bg-green-500 text-white shadow-lg' : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600' }}">
+                                class="flex-1 px-3 py-2 rounded-lg text-xs font-semibold transition-all border-2 {{ $payment_method === 'card' ? 'bg-cyan-500 text-white border-cyan-500' : 'bg-transparent text-cyan-600 border-cyan-500 hover:bg-cyan-50 dark:hover:bg-cyan-900/20' }}">
                             Tarjeta
                         </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Botones de Acción - HORIZONTAL COMPACTO -->
-            <div class="p-2 bg-white dark:bg-gray-800 border-t-2 border-gray-300 dark:border-gray-600">
-                <!-- Todos los botones en 2 filas horizontales -->
-                <div class="flex flex-col gap-1">
-                    <!-- Fila 1: Pre-cuenta y CUENTA -->
-                    <div class="grid grid-cols-2 gap-1">
-                        <!-- Pre-cuenta (Rosado) -->
-                        <button class="px-2 py-2 bg-pink-500 hover:bg-pink-600 text-white font-bold text-[10px] rounded transition-all shadow-md">
-                            Pre-cuenta
-                        </button>
-                        
-                        <!-- CUENTA (Morado/Azul - Destacado) -->
-                        <button wire:click="saveOrder" 
-                                class="px-2 py-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-black text-xs rounded transition-all active:scale-95 shadow-lg uppercase">
-                            CUENTA
-                        </button>
-                    </div>
-                    
-                    <!-- Fila 2: Orden de cocina -->
-                    <button class="px-2 py-2 bg-gray-600 hover:bg-gray-700 text-white font-bold text-[10px] rounded transition-all">
+            <!-- Botones de Acción - 2 FILAS: 3 botones + 4 botones -->
+            <div class="p-2 bg-white dark:bg-gray-800 border-t-2 border-gray-300 dark:border-gray-600 space-y-2">
+                <!-- Primera Fila: 3 botones outline -->
+                <div class="grid grid-cols-3 gap-2">
+                    <button class="px-2 py-2.5 rounded-lg text-xs font-semibold transition-all border-2 bg-transparent text-gray-700 dark:text-gray-300 border-gray-400 dark:border-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700">
                         Orden de cocina
                     </button>
-                    
-                    <!-- Fila 3: Orden & Imprimir -->
-                    <button class="px-2 py-2 bg-gray-600 hover:bg-gray-700 text-white font-bold text-[10px] rounded transition-all">
-                        Orden de cocina & Imprimir
+                    <button class="px-2 py-2.5 rounded-lg text-xs font-semibold transition-all border-2 bg-transparent text-gray-700 dark:text-gray-300 border-gray-400 dark:border-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700">
+                        Orden & Imprimir
+                    </button>
+                    <button class="px-2 py-2.5 rounded-lg text-xs font-semibold transition-all border-2 bg-transparent text-gray-700 dark:text-gray-300 border-gray-400 dark:border-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700">
+                        Orden, Cuenta & Pago
+                    </button>
+                </div>
+                
+                <!-- Segunda Fila: 4 botones de colores -->
+                <div class="grid grid-cols-4 gap-2">
+                    <!-- Pre-cuenta (Rosado) -->
+                    <button class="px-2 py-2.5 rounded-lg text-xs font-semibold transition-all border-2 bg-transparent text-pink-600 dark:text-pink-400 border-pink-500 hover:bg-pink-50 dark:hover:bg-pink-900/20">
+                        Pre-cuenta
                     </button>
                     
-                    <!-- Fila 4: Orden, Cuenta & Pago -->
-                    <button class="px-2 py-2 bg-gray-600 hover:bg-gray-700 text-white font-bold text-[10px] rounded transition-all">
-                        Orden de cocina, Cuenta & Pago
+                    <!-- CUENTA (Morado/Azul - Destacado con relleno) -->
+                    <button wire:click="saveOrder" 
+                            class="px-2 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-black text-sm rounded-lg transition-all active:scale-95 shadow-lg uppercase border-2 border-purple-600">
+                        💰 CUENTA
                     </button>
                     
-                    <!-- Fila 5: Cuenta y Pagar + Cuenta e Imprimir -->
-                    <div class="grid grid-cols-2 gap-1">
-                        <button class="px-2 py-2 bg-green-500 hover:bg-green-600 text-white font-bold text-[10px] rounded transition-all shadow-md">
-                            Cuenta y Pagar
-                        </button>
-                        
-                        <button class="px-2 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold text-[10px] rounded transition-all shadow-md">
-                            Cuenta e Imprimir
-                        </button>
-                    </div>
+                    <!-- Cuenta y Pagar (Verde) -->
+                    <button class="px-2 py-2.5 rounded-lg text-xs font-semibold transition-all border-2 bg-transparent text-green-600 dark:text-green-400 border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20">
+                        Cuenta & Pagar
+                    </button>
+                    
+                    <!-- Cuenta e Imprimir (Azul) -->
+                    <button class="px-2 py-2.5 rounded-lg text-xs font-semibold transition-all border-2 bg-transparent text-blue-600 dark:text-blue-400 border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20">
+                        Cuenta & Imprimir
+                    </button>
                 </div>
             </div>
     </div>
