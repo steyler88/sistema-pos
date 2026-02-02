@@ -31,6 +31,13 @@ class ProductResource extends Resource
                     ->required()
                     ->label('Nombre del Producto'),
                 
+                Forms\Components\TextInput::make('sku')
+                    ->label('SKU (Código Único)')
+                    ->unique(ignoreRecord: true)
+                    ->maxLength(255)
+                    ->helperText('Código único para sincronizar con WooCommerce')
+                    ->placeholder('PROD-001'),
+                
                 Forms\Components\Select::make('category_id')
                     ->relationship('category', 'name')
                     ->searchable()
@@ -82,6 +89,13 @@ class ProductResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->label('Producto'),
+
+                Tables\Columns\TextColumn::make('sku')
+                    ->searchable()
+                    ->sortable()
+                    ->label('SKU')
+                    ->badge()
+                    ->color('info'),
 
                 Tables\Columns\TextColumn::make('category.name')
                     ->searchable()
