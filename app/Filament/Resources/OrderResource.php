@@ -373,24 +373,34 @@ class OrderResource extends Resource
     public static function getNavigationItems(): array
     {
         return [
-            \Filament\Navigation\NavigationItem::make('Nueva Venta')
+            \Filament\Navigation\NavigationItem::make('POS Táctil')
+                ->group(static::getNavigationGroup())
+                ->icon('heroicon-o-device-tablet')
+                ->url(route('pos.touch'))
+                ->isActiveWhen(fn () => request()->routeIs('pos.touch'))
+                ->sort(1),
+            
+            \Filament\Navigation\NavigationItem::make('Nueva Venta (Formulario)')
                 ->group(static::getNavigationGroup())
                 ->icon('heroicon-o-plus-circle')
                 ->url(static::getUrl('create'))
-                ->isActiveWhen(fn () => request()->routeIs('filament.admin.resources.orders.create')),
+                ->isActiveWhen(fn () => request()->routeIs('filament.admin.resources.orders.create'))
+                ->sort(2),
             
             \Filament\Navigation\NavigationItem::make('Órdenes Activas')
                 ->group(static::getNavigationGroup())
                 ->icon('heroicon-o-clock')
                 ->url(static::getUrl('active'))
                 ->badge(fn () => \App\Models\Order::where('status', 'pending')->count(), color: 'warning')
-                ->isActiveWhen(fn () => request()->routeIs('filament.admin.resources.orders.active')),
+                ->isActiveWhen(fn () => request()->routeIs('filament.admin.resources.orders.active'))
+                ->sort(3),
             
             \Filament\Navigation\NavigationItem::make('Historial')
                 ->group(static::getNavigationGroup())
                 ->icon('heroicon-o-clipboard-document-list')
                 ->url(static::getUrl('index'))
-                ->isActiveWhen(fn () => request()->routeIs('filament.admin.resources.orders.index')),
+                ->isActiveWhen(fn () => request()->routeIs('filament.admin.resources.orders.index'))
+                ->sort(4),
         ];
     }
 }

@@ -1,5 +1,7 @@
 <x-filament-panels::page>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+    {{-- Fondo dark mode forzado --}}
+    <div class="min-h-screen bg-gray-900 -m-6 p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         @php
             $activeOrders = \App\Models\Order::where('status', 'pending')
                 ->with('items.product')
@@ -77,16 +79,20 @@
                     </div>
 
                     <div class="grid grid-cols-2 gap-2">
-                        <a href="{{ route('filament.admin.resources.orders.edit', $order) }}" 
-                           class="px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white text-center text-xs font-bold rounded transition-all">
+                        <x-button-secondary 
+                            size="sm" 
+                            fullWidth
+                            onclick="window.location.href='{{ route('filament.admin.resources.orders.edit', $order) }}'">
                             ✏️ Editar
-                        </a>
-                        <form action="{{ route('filament.admin.resources.orders.edit', $order) }}" method="GET" class="inline">
-                            <button type="submit" 
-                                    class="w-full px-3 py-2 bg-green-500 hover:bg-green-600 text-white text-xs font-bold rounded transition-all">
-                                ✅ Completar
-                            </button>
-                        </form>
+                        </x-button-secondary>
+                        
+                        <x-button-primary 
+                            size="sm" 
+                            fullWidth
+                            class="!bg-green-500 hover:!bg-green-600 focus:!ring-green-500"
+                            onclick="window.location.href='{{ route('filament.admin.resources.orders.edit', $order) }}'">
+                            ✅ Completar
+                        </x-button-primary>
                     </div>
                 </div>
 
@@ -99,16 +105,25 @@
                 @endif
             </div>
         @empty
-            <div class="col-span-full text-center py-12">
-                <div class="text-6xl mb-4">✅</div>
-                <div class="text-xl font-bold text-gray-700 dark:text-gray-300 mb-2">No hay órdenes pendientes</div>
-                <div class="text-gray-500 dark:text-gray-400 mb-4">Todas las órdenes han sido completadas</div>
-                <a href="{{ route('filament.admin.resources.orders.create') }}" 
-                   class="inline-block px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg transition-all">
-                    ➕ Nueva Venta
-                </a>
+            <div class="col-span-full flex items-center justify-center min-h-[60vh]">
+                <div class="text-center max-w-md">
+                    <div class="text-8xl mb-6 opacity-50">✅</div>
+                    <h3 class="text-2xl font-bold text-white mb-3">
+                        No hay órdenes pendientes
+                    </h3>
+                    <p class="text-gray-400 mb-6">
+                        Todas las órdenes han sido completadas. ¡Excelente trabajo!
+                    </p>
+                    <x-button-primary 
+                        size="lg"
+                        icon="➕"
+                        onclick="window.location.href='{{ route('pos.touch') }}'">
+                        Nueva Venta
+                    </x-button-primary>
+                </div>
             </div>
         @endforelse
+        </div>
     </div>
 </x-filament-panels::page>
 

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo - Estilos Neón POS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%);
+            padding: 40px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .subtitle {
+            color: #a0a0a0;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .section-title {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Botones con efecto neón base */
+        .btn-neon {
+            position: relative;
+            padding: 15px 30px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: 2px solid;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            overflow: hidden;
+            background: transparent;
+            font-size: 14px;
+        }
+
+        /* Efecto de resplandor neón */
+        .btn-neon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-neon:hover::before {
+            left: 100%;
+        }
+
+        /* Botón MESA - Azul */
+        .btn-neon-mesa {
+            color: #3b82f6;
+            border-color: #3b82f6;
+            background: transparent;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.3),
+                        inset 0 0 10px rgba(59, 130, 246, 0.1);
+        }
+
+        .btn-neon-mesa:hover {
+            background: rgba(59, 130, 246, 0.1);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.6),
+                        0 0 40px rgba(59, 130, 246, 0.4),
+                        inset 0 0 15px rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-neon-mesa.active {
+            background: #3b82f6;
+            color: white;
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.8),
+                        0 0 50px rgba(59, 130, 246, 0.6),
+                        inset 0 0 20px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Botón DELIVERY - Verde */
+        .btn-neon-delivery {
+            color: #10b981;
+            border-color: #10b981;
+            background: transparent;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.3),
+                        inset 0 0 10px rgba(16, 185, 129, 0.1);
+        }
+
+        .btn-neon-delivery:hover {
+            background: rgba(16, 185, 129, 0.1);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.6),
+                        0 0 40px rgba(16, 185, 129, 0.4),
+                        inset 0 0 15px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-neon-delivery.active {
+            background: #10b981;
+            color: white;
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.8),
+                        0 0 50px rgba(16, 185, 129, 0.6),
+                        inset 0 0 20px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Botón PARA LLEVAR - Naranja */
+        .btn-neon-para-llevar {
+            color: #f97316;
+            border-color: #f97316;
+            background: transparent;
+            box-shadow: 0 0 10px rgba(249, 115, 22, 0.3),
+                        inset 0 0 10px rgba(249, 115, 22, 0.1);
+        }
+
+        .btn-neon-para-llevar:hover {
+            background: rgba(249, 115, 22, 0.1);
+            box-shadow: 0 0 20px rgba(249, 115, 22, 0.6),
+                        0 0 40px rgba(249, 115, 22, 0.4),
+                        inset 0 0 15px rgba(249, 115, 22, 0.2);
+        }
+
+        .btn-neon-para-llevar.active {
+            background: #f97316;
+            color: white;
+            box-shadow: 0 0 25px rgba(249, 115, 22, 0.8),
+                        0 0 50px rgba(249, 115, 22, 0.6),
+                        inset 0 0 20px rgba(249, 115, 22, 0.4);
+        }
+
+        /* Botón YAPE - Morado */
+        .btn-neon-yape {
+            color: #a855f7;
+            border-color: #a855f7;
+            background: transparent;
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.3),
+                        inset 0 0 10px rgba(168, 85, 247, 0.1);
+        }
+
+        .btn-neon-yape:hover {
+            background: rgba(168, 85, 247, 0.1);
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.6),
+                        0 0 40px rgba(168, 85, 247, 0.4),
+                        inset 0 0 15px rgba(168, 85, 247, 0.2);
+        }
+
+        .btn-neon-yape.active {
+            background: #a855f7;
+            color: white;
+            box-shadow: 0 0 25px rgba(168, 85, 247, 0.8),
+                        0 0 50px rgba(168, 85, 247, 0.6),
+                        inset 0 0 20px rgba(168, 85, 247, 0.4);
+        }
+
+        /* Botón EFECTIVO - Esmeralda */
+        .btn-neon-efectivo {
+            color: #10b981;
+            border-color: #10b981;
+            background: transparent;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.3),
+                        inset 0 0 10px rgba(16, 185, 129, 0.1);
+        }
+
+        .btn-neon-efectivo:hover {
+            background: rgba(16, 185, 129, 0.1);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.6),
+                        0 0 40px rgba(16, 185, 129, 0.4),
+                        inset 0 0 15px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-neon-efectivo.active {
+            background: #10b981;
+            color: white;
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.8),
+                        0 0 50px rgba(16, 185, 129, 0.6),
+                        inset 0 0 20px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Botón TARJETA - Cyan */
+        .btn-neon-tarjeta {
+            color: #06b6d4;
+            border-color: #06b6d4;
+            background: transparent;
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.3),
+                        inset 0 0 10px rgba(6, 182, 212, 0.1);
+        }
+
+        .btn-neon-tarjeta:hover {
+            background: rgba(6, 182, 212, 0.1);
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.6),
+                        0 0 40px rgba(6, 182, 212, 0.4),
+                        inset 0 0 15px rgba(6, 182, 212, 0.2);
+        }
+
+        .btn-neon-tarjeta.active {
+            background: #06b6d4;
+            color: white;
+            box-shadow: 0 0 25px rgba(6, 182, 212, 0.8),
+                        0 0 50px rgba(6, 182, 212, 0.6),
+                        inset 0 0 20px rgba(6, 182, 212, 0.4);
+        }
+
+        /* Botón CUENTA - Morado/Índigo con gradiente */
+        .btn-neon-cuenta {
+            background: linear-gradient(135deg, #9333ea 0%, #4f46e5 100%);
+            color: white;
+            border: 2px solid #9333ea;
+            box-shadow: 0 0 20px rgba(147, 51, 234, 0.6),
+                        0 0 40px rgba(147, 51, 234, 0.4),
+                        inset 0 0 15px rgba(147, 51, 234, 0.3);
+        }
+
+        .btn-neon-cuenta:hover {
+            box-shadow: 0 0 30px rgba(147, 51, 234, 0.8),
+                        0 0 60px rgba(147, 51, 234, 0.6),
+                        0 0 90px rgba(147, 51, 234, 0.4),
+                        inset 0 0 20px rgba(147, 51, 234, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Animación de pulso para el botón principal */
+        @keyframes neon-pulse {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(147, 51, 234, 0.6),
+                            0 0 40px rgba(147, 51, 234, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(147, 51, 234, 0.8),
+                            0 0 60px rgba(147, 51, 234, 0.6);
+            }
+        }
+
+        .btn-neon-cuenta {
+            animation: neon-pulse 2s ease-in-out infinite;
+        }
+
+        /* Botones secundarios - Gris */
+        .btn-neon-secondary {
+            color: #9ca3af;
+            border-color: #6b7280;
+            background: transparent;
+            box-shadow: 0 0 10px rgba(107, 114, 128, 0.3),
+                        inset 0 0 10px rgba(107, 114, 128, 0.1);
+        }
+
+        .btn-neon-secondary:hover {
+            background: rgba(107, 114, 128, 0.1);
+            box-shadow: 0 0 20px rgba(107, 114, 128, 0.6),
+                        0 0 40px rgba(107, 114, 128, 0.4),
+                        inset 0 0 15px rgba(107, 114, 128, 0.2);
+            color: #d1d5db;
+        }
+
+        /* Botón Pre-cuenta - Rosa */
+        .btn-neon-precuenta {
+            color: #ec4899;
+            border-color: #ec4899;
+            background: transparent;
+            box-shadow: 0 0 10px rgba(236, 72, 153, 0.3),
+                        inset 0 0 10px rgba(236, 72, 153, 0.1);
+        }
+
+        .btn-neon-precuenta:hover {
+            background: rgba(236, 72, 153, 0.1);
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.6),
+                        0 0 40px rgba(236, 72, 153, 0.4),
+                        inset 0 0 15px rgba(236, 72, 153, 0.2);
+        }
+
+        .info-box {
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+
+        .info-box p {
+            color: white;
+            line-height: 1.8;
+            margin: 10px 0;
+        }
+
+        .info-box strong {
+            color: #60a5fa;
+        }
+
+        .demo-note {
+            text-align: center;
+            color: #a0a0a0;
+            margin-top: 40px;
+            font-size: 0.9rem;
+        }
+
+        .state-label {
+            display: inline-block;
+            margin-top: 10px;
+            color: #60a5fa;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌟 Demo - Estilos Neón POS</h1>
+        <p class="subtitle">Sistema de Ventas con Efectos Visuales Modernos</p>
+
+        <!-- Tipo de Servicio -->
+        <div class="section">
+            <h2 class="section-title">🍽️ Tipo de Servicio</h2>
+            <div class="button-group">
+                <div>
+                    <button class="btn-neon btn-neon-mesa">Mesa</button>
+                    <div class="state-label">Normal</div>
+                </div>
+                <div>
+                    <button class="btn-neon btn-neon-delivery active">Delivery</button>
+                    <div class="state-label">✓ Activo</div>
+                </div>
+                <div>
+                    <button class="btn-neon btn-neon-para-llevar">Para Llevar</button>
+                    <div class="state-label">Normal</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Forma de Pago -->
+        <div class="section">
+            <h2 class="section-title">💳 Forma de Pago</h2>
+            <div class="button-group">
+                <div>
+                    <button class="btn-neon btn-neon-yape active">Yape</button>
+                    <div class="state-label">✓ Activo</div>
+                </div>
+                <div>
+                    <button class="btn-neon btn-neon-efectivo">Efectivo</button>
+                    <div class="state-label">Normal</div>
+                </div>
+                <div>
+                    <button class="btn-neon btn-neon-tarjeta">Tarjeta</button>
+                    <div class="state-label">Normal</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="section">
+            <h2 class="section-title">🎯 Botones de Acción</h2>
+            <div class="button-group" style="margin-bottom: 20px;">
+                <button class="btn-neon btn-neon-secondary">Orden de Cocina</button>
+                <button class="btn-neon btn-neon-secondary">Orden & Imprimir</button>
+                <button class="btn-neon btn-neon-secondary">Orden, Cuenta & Pago</button>
+            </div>
+            <div class="button-group">
+                <button class="btn-neon btn-neon-precuenta">Pre-cuenta</button>
+                <button class="btn-neon btn-neon-cuenta">💰 CUENTA</button>
+                <button class="btn-neon btn-neon-delivery">Cuenta & Pagar</button>
+                <button class="btn-neon btn-neon-mesa">Cuenta & Imprimir</button>
+            </div>
+        </div>
+
+        <!-- Información -->
+        <div class="info-box">
+            <p><strong>✨ Características Implementadas:</strong></p>
+            <p>✅ Efecto de resplandor neón en todos los botones</p>
+            <p>✅ Los botones activos permanecen iluminados con fondo de color</p>
+            <p>✅ Animación de brillo deslizante al pasar el mouse</p>
+            <p>✅ Resplandor multi-capa para mayor profundidad</p>
+            <p>✅ El botón CUENTA tiene animación de pulso constante</p>
+            <p>✅ Colores distintivos por tipo de acción</p>
+            <p><strong>🎯 Beneficio:</strong> El operador puede identificar fácilmente qué opciones están seleccionadas</p>
+        </div>
+
+        <p class="demo-note">
+            💡 <strong>Tip:</strong> Pasa el mouse sobre los botones para ver el efecto de resplandor intenso<br>
+            Los botones marcados como "✓ Activo" muestran cómo se ven cuando están seleccionados
+        </p>
+    </div>
+
+    <script>
+        // Agregar interactividad para demostración
+        document.querySelectorAll('.btn-neon').forEach(button => {
+            button.addEventListener('click', function() {
+                // Remover active de hermanos
+                const parent = this.parentElement.parentElement;
+                parent.querySelectorAll('.btn-neon').forEach(btn => {
+                    btn.classList.remove('active');
+                    const label = btn.parentElement.querySelector('.state-label');
+                    if (label) {
+                        label.textContent = 'Normal';
+                    }
+                });
+                
+                // Agregar active a este
+                this.classList.add('active');
+                const label = this.parentElement.querySelector('.state-label');
+                if (label) {
+                    label.textContent = '✓ Activo';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+

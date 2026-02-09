@@ -13,6 +13,27 @@ use Illuminate\Support\Facades\Log;
 class WooCommerceWebhookController extends Controller
 {
     /**
+     * Endpoint de prueba para ver qué envía WooCommerce
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function test(Request $request)
+    {
+        Log::info('TEST Webhook recibido', [
+            'headers' => $request->headers->all(),
+            'payload' => $request->all(),
+            'raw_content' => $request->getContent()
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Test webhook recibido correctamente',
+            'received_data' => $request->all()
+        ], 200);
+    }
+
+    /**
      * Endpoint para recibir webhooks de órdenes creadas en WooCommerce
      * 
      * @param Request $request
@@ -27,12 +48,19 @@ class WooCommerceWebhookController extends Controller
             // Extraer datos de la orden de WooCommerce
             $wooOrder = $request->all();
             
-            // Validación básica
-            if (!isset($wooOrder['id']) || !isset($wooOrder['line_items'])) {
+            // Validación básica - solo requerir ID
+            if (!isset($wooOrder['id'])) {
+                Log::warning('Webhook sin ID de orden', ['payload' => $wooOrder]);
                 return response()->json([
                     'success' => false,
-                    'message' => 'Payload inválido: faltan datos requeridos'
+                    'message' => 'Payload inválido: falta el ID de la orden'
                 ], 400);
+            }
+            
+            // Si no hay line_items, crear array vacío
+            if (!isset($wooOrder['line_items'])) {
+                Log::info('Orden sin items, creando array vacío', ['order_id' => $wooOrder['id']]);
+                $wooOrder['line_items'] = [];
             }
 
             // Iniciar transacción para garantizar integridad
@@ -72,7 +100,10 @@ class WooCommerceWebhookController extends Controller
                 // PASO 3: Procesar Items de la Orden
                 $itemsNotFound = [];
                 
-                foreach ($wooOrder['line_items'] as $lineItem) {
+                // Verificar si line_items es un array válido
+                $lineItems = is_array($wooOrder['line_items']) ? $wooOrder['line_items'] : [];
+                
+                foreach ($lineItems as $lineItem) {
                     $sku = $lineItem['sku'] ?? null;
                     
                     if (!$sku) {

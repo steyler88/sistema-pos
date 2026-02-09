@@ -1,15 +1,122 @@
+<div>
+<style>
+    /* Sistema de Botones Uniforme - POS ElchePizza */
+    
+    /* Botón Base - Todos los botones comparten estos estilos */
+    .btn-pos {
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+        border-radius: 0.5rem;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        font-size: 0.75rem;
+        padding: 0.625rem 1rem;
+        border: 2px solid;
+    }
+
+    /* Botones de Selección (Mesa, Delivery, Para Llevar) */
+    .btn-select {
+        background: #374151;
+        border-color: #4b5563;
+        color: #d1d5db;
+    }
+
+    .btn-select:hover {
+        background: #4b5563;
+        border-color: #6b7280;
+        color: #fff;
+    }
+
+    .btn-select.active {
+        background: #f97316;
+        border-color: #f97316;
+        color: white;
+        box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
+    }
+
+    /* Botones de Pago (Yape, Efectivo, Tarjeta) */
+    .btn-payment {
+        background: #374151;
+        border-color: #4b5563;
+        color: #d1d5db;
+    }
+
+    .btn-payment:hover {
+        background: #4b5563;
+        border-color: #6b7280;
+        color: #fff;
+    }
+
+    .btn-payment.active {
+        background: #f97316;
+        border-color: #f97316;
+        color: white;
+        box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
+    }
+
+    /* Botones de Acción Secundaria (Orden de Cocina, etc.) */
+    .btn-secondary {
+        background: #1f2937;
+        border-color: #374151;
+        color: #9ca3af;
+    }
+
+    .btn-secondary:hover {
+        background: #374151;
+        border-color: #4b5563;
+        color: #d1d5db;
+    }
+
+    /* Botón Principal (CUENTA) */
+    .btn-primary-pos {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+        border-color: #f97316;
+        color: white;
+        font-weight: 700;
+        box-shadow: 0 4px 14px 0 rgba(249, 115, 22, 0.4);
+        font-size: 0.875rem;
+    }
+
+    .btn-primary-pos:hover {
+        background: linear-gradient(135deg, #ea580c 0%, #dc2626 100%);
+        box-shadow: 0 6px 20px 0 rgba(249, 115, 22, 0.6);
+        transform: translateY(-1px);
+    }
+
+    .btn-primary-pos:active {
+        transform: translateY(0);
+    }
+
+    /* Animación para mensajes flash */
+    @keyframes slide-in {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    .animate-slide-in {
+        animation: slide-in 0.3s ease-out;
+    }
+</style>
+
 <div class="h-screen bg-white dark:bg-gray-900 flex w-full m-0 p-0">
     
-    <!-- SECCIÓN CENTRAL: PRODUCTOS (ZONA AZUL) - Ocupa todo el espacio disponible -->
-    <div class="flex-1 flex flex-col bg-white dark:bg-gray-900 border-r-2 border-blue-500">
+    <!-- SECCIÓN CENTRAL: PRODUCTOS (ZONA NARANJA) - Ocupa todo el espacio disponible -->
+    <div class="flex-1 flex flex-col bg-white dark:bg-gray-900 border-r-2 border-orange-500">
             
             <!-- BUSCADOR PRINCIPAL - ESTILO IZIREST -->
-            <div class="p-4 bg-white dark:bg-gray-800 border-b-4 border-blue-600">
+            <div class="p-4 bg-white dark:bg-gray-800 border-b-4 border-orange-600">
                 <div class="relative">
                     <input type="text" 
                            wire:model.live="searchTerm"
                            placeholder="Busque su elemento de menú aquí" 
-                           class="w-full px-4 py-3 pl-10 text-base border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:bg-gray-700 dark:text-white">
+                           class="w-full px-4 py-3 pl-10 text-base border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 dark:bg-gray-700 dark:text-white placeholder-gray-400 transition-all">
                     <svg class="absolute left-3 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
@@ -30,12 +137,12 @@
                     
                     <!-- CATEGORÍAS -->
                     <button wire:click="selectCategory('Mostrar todo')"
-                            class="px-6 py-3 font-bold text-xs whitespace-nowrap transition-all flex items-center gap-2 {{ ($selectedView === 'categories' && $selectedCategory === 'Mostrar todo') ? 'bg-black text-white border-b-3 border-blue-500' : 'text-gray-300 hover:bg-gray-800 hover:text-white' }}">
+                            class="px-6 py-3 font-bold text-xs whitespace-nowrap transition-all flex items-center gap-2 {{ ($selectedView === 'categories' && $selectedCategory === 'Mostrar todo') ? 'bg-black text-white border-b-3 border-orange-500' : 'text-gray-300 hover:bg-gray-800 hover:text-white' }}">
                         <span class="text-base">📋</span> MOSTRAR TODO
                     </button>
                     @foreach($categories as $category)
                         <button wire:click="selectCategory('{{ $category->name }}')"
-                                class="px-6 py-3 font-bold text-xs whitespace-nowrap transition-all flex items-center gap-2 {{ ($selectedView === 'categories' && $selectedCategory === $category->name) ? 'bg-black text-white border-b-3 border-blue-500' : 'text-gray-300 hover:bg-gray-800 hover:text-white' }}"
+                                class="px-6 py-3 font-bold text-xs whitespace-nowrap transition-all flex items-center gap-2 {{ ($selectedView === 'categories' && $selectedCategory === $category->name) ? 'bg-black text-white border-b-3 border-orange-500' : 'text-gray-300 hover:bg-gray-800 hover:text-white' }}"
                                 style="border-color: {{ ($selectedView === 'categories' && $selectedCategory === $category->name) ? $category->color : 'transparent' }};">
                             @if($category->icon)
                                 <span class="text-base">{{ $category->icon }}</span>
@@ -53,7 +160,7 @@
                         <!-- VISTA DE COMBOS -->
                         @forelse($items as $combo)
                             <button wire:click="addComboToCart({{ $combo->id }})"
-                                    class="group relative bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 active:scale-95 border-2 border-orange-300 dark:border-orange-700">
+                                    class="group relative bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-orange-500/50 transition-all transform hover:scale-105 active:scale-95 border-2 border-orange-300 dark:border-orange-700 hover:border-orange-500">
                                 
                                 <!-- Badge "COMBO" -->
                                 <div class="absolute top-1 right-1 bg-gradient-to-r from-orange-500 to-red-500 text-white px-2 py-0.5 rounded-full font-black text-[9px] shadow-md z-10">
@@ -109,7 +216,7 @@
                         <!-- VISTA DE PRODUCTOS -->
                         @forelse($items as $product)
                             <button wire:click="addToCart({{ $product->id }})"
-                                    class="group relative bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow hover:shadow-xl transition-all transform hover:scale-105 active:scale-95">
+                                    class="group relative bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow hover:shadow-xl hover:shadow-orange-500/50 transition-all transform hover:scale-105 active:scale-95 border-2 border-transparent hover:border-orange-500">
                                 
                                 <!-- Imagen del Producto -->
                                 <div class="relative h-28 bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800">
@@ -125,7 +232,7 @@
                                     @endif
                                     
                                     <!-- Badge de Precio -->
-                                    <div class="absolute top-1 left-1 bg-gray-900 text-white px-2 py-1 rounded-md font-bold text-xs">
+                                    <div class="absolute top-1 left-1 bg-gradient-to-br from-orange-500 to-orange-600 text-white px-2 py-1 rounded-md font-bold text-xs shadow-lg">
                                         S/{{ number_format($product->price, 2) }}
                                     </div>
                                 </div>
@@ -149,11 +256,11 @@
             </div>
     </div>
 
-    <!-- PANEL DERECHO: DETALLES DE LA ORDEN (ZONA VERDE) - Ancho fijo optimizado -->
-    <div class="w-96 bg-white dark:bg-gray-800 border-l-4 border-green-500 shadow-xl overflow-y-auto h-screen">
+    <!-- PANEL DERECHO: DETALLES DE LA ORDEN (ZONA NARANJA) - Ancho fijo optimizado -->
+    <div class="w-96 bg-white dark:bg-gray-800 border-l-4 border-orange-500 shadow-xl overflow-y-auto h-screen">
             
             <!-- Header: Info del Pedido con ícono -->
-            <div class="bg-gradient-to-r from-green-500 to-green-600 p-3 text-white flex items-center gap-3">
+            <div class="bg-gradient-to-r from-orange-500 to-orange-600 p-3 text-white flex items-center gap-3">
                 <!-- Ícono y título -->
                 <div class="flex items-center gap-2 flex-1">
                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
@@ -163,31 +270,32 @@
                         <div class="text-xs opacity-90">CAJA COCINA</div>
                         <div class="flex items-center gap-2">
                             <span class="text-lg font-bold">Saldo: S/${{ number_format($total, 2) }}</span>
-                            <span class="text-xs bg-green-700 px-2 py-0.5 rounded-full">Estado: Abierta</span>
+                            <span class="text-xs bg-orange-700 px-2 py-0.5 rounded-full">Estado: Abierta</span>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Botón cambiar -->
-                <button class="text-xs bg-white bg-opacity-20 hover:bg-opacity-30 px-3 py-1 rounded transition-all">
+                <button class="text-xs bg-white bg-opacity-20 hover:bg-opacity-30 px-3 py-1.5 rounded-md transition-all font-medium">
                     🔄 Cambiar
                 </button>
             </div>
 
-            <!-- Tipo de Servicio (En Restaurante / Delivery / Recogida) - HORIZONTAL -->
-<div class="p-2 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+            <!-- Tipo de Servicio -->
+<div class="p-3 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                <div class="text-[10px] text-gray-600 dark:text-gray-400 mb-2 font-semibold uppercase">Tipo de Servicio:</div>
                 <div class="flex gap-2">
                     <button wire:click="$set('order_type', 'mesa')"
-                            class="flex-1 px-3 py-2 rounded-lg text-xs font-semibold transition-all border-2 {{ $order_type === 'mesa' ? 'bg-blue-500 text-white border-blue-500' : 'bg-transparent text-blue-500 border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20' }}">
-                        Mesa
+                            class="btn-pos btn-select flex-1 {{ $order_type === 'mesa' ? 'active' : '' }}">
+                        🍽️ Mesa
                     </button>
                     <button wire:click="$set('order_type', 'delivery')"
-                            class="flex-1 px-3 py-2 rounded-lg text-xs font-semibold transition-all border-2 {{ $order_type === 'delivery' ? 'bg-green-500 text-white border-green-500' : 'bg-transparent text-green-600 border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20' }}">
-                        Delivery
+                            class="btn-pos btn-select flex-1 {{ $order_type === 'delivery' ? 'active' : '' }}">
+                        🛵 Delivery
                     </button>
                     <button wire:click="$set('order_type', 'para_llevar')"
-                            class="flex-1 px-3 py-2 rounded-lg text-xs font-semibold transition-all border-2 {{ $order_type === 'para_llevar' ? 'bg-orange-500 text-white border-orange-500' : 'bg-transparent text-orange-600 border-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20' }}">
-                        Para Llevar
+                            class="btn-pos btn-select flex-1 {{ $order_type === 'para_llevar' ? 'active' : '' }}">
+                        📦 Para Llevar
                     </button>
                 </div>
             </div>
@@ -206,11 +314,11 @@
                     @if(in_array($order_type, ['mesa', 'barra']))
                     <div class="flex items-center gap-1">
                         <span class="text-gray-500 dark:text-gray-400">🍽️</span>
-                        <select wire:model="table_location" class="text-xs border border-gray-300 dark:border-gray-600 rounded px-1 py-0.5 dark:bg-gray-700">
+                        <x-form-select wire:model="table_location" class="text-xs !px-1 !py-0.5 min-w-[80px]">
                             <option value="Mesa 1">Mesa 1</option>
                             <option value="Mesa 2">Mesa 2</option>
                             <option value="Barra">Barra</option>
-                        </select>
+                        </x-form-select>
                     </div>
                     @endif
                     
@@ -224,15 +332,15 @@
                     <!-- Cliente -->
                     <div class="flex items-center gap-1 flex-1 min-w-[120px]">
                         <span class="text-gray-500 dark:text-gray-400">👤</span>
-                        <input wire:model="customer_name" type="text" class="text-xs border border-gray-300 dark:border-gray-600 rounded px-1 py-0.5 flex-1 dark:bg-gray-700 dark:text-white" placeholder="Cliente">
+                        <x-form-input wire:model="customer_name" type="text" placeholder="Cliente" class="text-xs !px-1 !py-0.5 flex-1" />
                     </div>
                     
                     <!-- Camarero -->
                     <div class="flex items-center gap-1 flex-1 min-w-[100px]">
                         <span class="text-gray-500 dark:text-gray-400">🧑‍🍳</span>
-                        <select class="text-xs border border-gray-300 dark:border-gray-600 rounded px-1 py-0.5 flex-1 dark:bg-gray-700 dark:text-white">
+                        <x-form-select class="text-xs !px-1 !py-0.5 flex-1">
                             <option>Jaquelyn Battle</option>
-                        </select>
+                        </x-form-select>
                     </div>
                 </div>
             </div>
@@ -310,7 +418,7 @@
             <!-- Botón Agregar Descuento -->
             @if(!empty($cart))
             <div class="px-2 py-1.5 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-                <button wire:click="$toggle('showDiscountInput')" class="w-full px-2 py-1.5 bg-white dark:bg-gray-700 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded text-xs font-semibold text-gray-700 dark:text-gray-300 hover:border-blue-500 hover:text-blue-600 transition-all flex items-center justify-center gap-1">
+                <button wire:click="$toggle('showDiscountInput')" class="w-full px-2 py-1.5 bg-white dark:bg-gray-700 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded text-xs font-semibold text-gray-700 dark:text-gray-300 hover:border-orange-500 hover:text-orange-600 dark:hover:text-orange-400 transition-all flex items-center justify-center gap-1">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
@@ -319,11 +427,10 @@
                 
                 @if($showDiscountInput ?? false)
                 <div class="mt-1 flex gap-1">
-                    <input wire:model="discount" type="number" step="0.01" placeholder="Monto" 
-                           class="flex-1 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded text-xs dark:bg-gray-700 dark:text-white">
-                    <button wire:click="applyDiscount" class="px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded text-xs font-semibold">
+                    <x-form-input wire:model="discount" type="number" step="0.01" placeholder="Monto" class="flex-1 !px-2 !py-1 text-xs" />
+                    <x-button-primary wire:click="applyDiscount" class="!px-3 !py-1 text-xs">
                         Aplicar
-                    </button>
+                    </x-button-primary>
                 </div>
                 @endif
             </div>
@@ -380,62 +487,55 @@
                     </div>
                 </div>
 
-                <!-- Forma de Pago - HORIZONTAL -->
-                <div class="px-2 pb-2 border-t border-gray-200 dark:border-gray-700 pt-2">
-                    <div class="text-[10px] text-gray-600 dark:text-gray-400 mb-1 font-semibold">Forma de Pago:</div>
+                <!-- Forma de Pago -->
+                <div class="px-3 pb-3 border-t border-gray-200 dark:border-gray-700 pt-3">
+                    <div class="text-[10px] text-gray-600 dark:text-gray-400 mb-2 font-semibold uppercase">Forma de Pago:</div>
                     <div class="flex gap-2">
                         <button wire:click="$set('payment_method', 'yape')"
-                                class="flex-1 px-3 py-2 rounded-lg text-xs font-semibold transition-all border-2 {{ $payment_method === 'yape' ? 'bg-purple-500 text-white border-purple-500' : 'bg-transparent text-purple-600 border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20' }}">
-                            Yape
+                                class="btn-pos btn-payment flex-1 {{ $payment_method === 'yape' ? 'active' : '' }}">
+                            💳 Yape
                         </button>
                         <button wire:click="$set('payment_method', 'cash')"
-                                class="flex-1 px-3 py-2 rounded-lg text-xs font-semibold transition-all border-2 {{ $payment_method === 'cash' ? 'bg-emerald-500 text-white border-emerald-500' : 'bg-transparent text-emerald-600 border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20' }}">
-                            Efectivo
+                                class="btn-pos btn-payment flex-1 {{ $payment_method === 'cash' ? 'active' : '' }}">
+                            💵 Efectivo
                         </button>
                         <button wire:click="$set('payment_method', 'card')"
-                                class="flex-1 px-3 py-2 rounded-lg text-xs font-semibold transition-all border-2 {{ $payment_method === 'card' ? 'bg-cyan-500 text-white border-cyan-500' : 'bg-transparent text-cyan-600 border-cyan-500 hover:bg-cyan-50 dark:hover:bg-cyan-900/20' }}">
-                            Tarjeta
+                                class="btn-pos btn-payment flex-1 {{ $payment_method === 'card' ? 'active' : '' }}">
+                            💳 Tarjeta
                         </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Botones de Acción - 2 FILAS: 3 botones + 4 botones -->
-            <div class="p-2 bg-white dark:bg-gray-800 border-t-2 border-gray-300 dark:border-gray-600 space-y-2">
-                <!-- Primera Fila: 3 botones outline -->
+            <!-- Botones de Acción -->
+            <div class="p-3 bg-white dark:bg-gray-800 border-t-2 border-gray-300 dark:border-gray-600 space-y-2">
+                <!-- Primera Fila: Botones secundarios -->
                 <div class="grid grid-cols-3 gap-2">
-                    <button class="px-2 py-2.5 rounded-lg text-xs font-semibold transition-all border-2 bg-transparent text-gray-700 dark:text-gray-300 border-gray-400 dark:border-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700">
-                        Orden de cocina
+                    <button class="btn-pos btn-secondary">
+                        📋 Orden Cocina
                     </button>
-                    <button class="px-2 py-2.5 rounded-lg text-xs font-semibold transition-all border-2 bg-transparent text-gray-700 dark:text-gray-300 border-gray-400 dark:border-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700">
-                        Orden & Imprimir
+                    <button class="btn-pos btn-secondary">
+                        🖨️ Orden & Imp.
                     </button>
-                    <button class="px-2 py-2.5 rounded-lg text-xs font-semibold transition-all border-2 bg-transparent text-gray-700 dark:text-gray-300 border-gray-400 dark:border-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700">
-                        Orden, Cuenta & Pago
+                    <button class="btn-pos btn-secondary">
+                        ⚡ Orden & Pago
                     </button>
                 </div>
                 
-                <!-- Segunda Fila: 4 botones de colores -->
+                <!-- Segunda Fila: Botón principal CUENTA destacado -->
                 <div class="grid grid-cols-4 gap-2">
-                    <!-- Pre-cuenta (Rosado) -->
-                    <button class="px-2 py-2.5 rounded-lg text-xs font-semibold transition-all border-2 bg-transparent text-pink-600 dark:text-pink-400 border-pink-500 hover:bg-pink-50 dark:hover:bg-pink-900/20">
-                        Pre-cuenta
+                    <button class="btn-pos btn-secondary">
+                        📄 Pre-cuenta
                     </button>
                     
-                    <!-- CUENTA (Morado/Azul - Destacado con relleno) -->
+                    <!-- BOTÓN PRINCIPAL -->
                     <button wire:click="saveOrder" 
-                            class="px-2 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-black text-sm rounded-lg transition-all active:scale-95 shadow-lg uppercase border-2 border-purple-600">
+                            class="btn-pos btn-primary-pos col-span-2">
                         💰 CUENTA
                     </button>
                     
-                    <!-- Cuenta y Pagar (Verde) -->
-                    <button class="px-2 py-2.5 rounded-lg text-xs font-semibold transition-all border-2 bg-transparent text-green-600 dark:text-green-400 border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20">
-                        Cuenta & Pagar
-                    </button>
-                    
-                    <!-- Cuenta e Imprimir (Azul) -->
-                    <button class="px-2 py-2.5 rounded-lg text-xs font-semibold transition-all border-2 bg-transparent text-blue-600 dark:text-blue-400 border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20">
-                        Cuenta & Imprimir
+                    <button class="btn-pos btn-secondary">
+                        🖨️ Cuenta & Imp.
                     </button>
                 </div>
             </div>
@@ -443,16 +543,19 @@
 
     <!-- Mensajes Flash -->
     @if (session()->has('success'))
-        <div class="fixed top-4 right-4 bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg z-50">
-            {{ session('success') }}
+        <div class="fixed top-4 right-4 z-50 animate-slide-in">
+            <x-alert type="success">
+                {{ session('success') }}
+            </x-alert>
         </div>
     @endif
 
     @if (session()->has('error'))
-        <div class="fixed top-4 right-4 bg-red-500 text-white px-6 py-4 rounded-lg shadow-lg z-50">
-            {{ session('error') }}
+        <div class="fixed top-4 right-4 z-50 animate-slide-in">
+            <x-alert type="error">
+                {{ session('error') }}
+            </x-alert>
         </div>
     @endif
 </div>
-
-
+</div>

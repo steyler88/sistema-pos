@@ -3,19 +3,23 @@
 namespace App\Filament\Resources\OrderResource\Pages;
 
 use App\Filament\Resources\OrderResource;
-use Filament\Resources\Pages\Page;
+use Filament\Resources\Pages\CreateRecord;
 
-class CreateOrder extends Page
+class CreateOrder extends CreateRecord
 {
     protected static string $resource = OrderResource::class;
     
-    protected static string $view = 'filament.resources.orders.create-touch-pos';
+    protected static ?string $title = 'Nueva Venta';
     
-    protected static ?string $title = '';
-    
-    // Eliminar breadcrumbs para vista completa
-    public function getBreadcrumbs(): array
+    // Redireccionar después de crear
+    protected function getRedirectUrl(): string
     {
-        return [];
+        return $this->getResource()::getUrl('index');
+    }
+    
+    // Mensaje de éxito
+    protected function getCreatedNotificationTitle(): ?string
+    {
+        return '¡Venta registrada exitosamente!';
     }
 }

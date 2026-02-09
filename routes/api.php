@@ -17,3 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('/webhooks/woocommerce/order-created', [WooCommerceWebhookController::class, 'orderCreated'])
     ->name('webhooks.woocommerce.order-created');
 
+// Endpoint de prueba para debugging
+Route::post('/webhooks/woocommerce/test', [WooCommerceWebhookController::class, 'test'])
+    ->name('webhooks.woocommerce.test');
+

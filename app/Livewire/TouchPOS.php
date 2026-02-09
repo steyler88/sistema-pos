@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\DB;
 
 class TouchPOS extends Component
 {
+    // Layout del componente
+    protected $layout = 'components.layouts.app';
     // Estado del carrito
     public $cart = [];
     
