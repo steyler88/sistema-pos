@@ -65,7 +65,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'America/Lima', // Zona horaria de Perú
 
     /*
     |--------------------------------------------------------------------------

@@ -197,7 +197,7 @@ class TouchPOS extends Component
     }
 
     /**
-     * Guardar la orden
+     * Guardar la orden e imprimir ticket
      */
     public function saveOrder()
     {
@@ -207,39 +207,57 @@ class TouchPOS extends Component
             return;
         }
 
+        // Validar tipo de orden
+        if (empty($this->order_type)) {
+            session()->flash('error', 'Selecciona el tipo de servicio');
+            return;
+        }
+
+        // Validar método de pago
+        if (empty($this->payment_method)) {
+            session()->flash('error', 'Selecciona la forma de pago');
+            return;
+        }
+
         try {
-            DB::transaction(function () {
+            $orderId = null;
+            
+            DB::transaction(function () use (&$orderId) {
                 // Crear la orden
                 $order = Order::create([
-                    'customer_name' => $this->customer_name,
+                    'customer_name' => $this->customer_name ?? 'Cliente General',
                     'order_type' => $this->order_type,
                     'table_location' => $this->table_location,
                     'payment_method' => $this->payment_method,
-                    'status' => $this->status,
-                    'notes' => $this->notes,
+                    'status' => 'pending',
+                    'notes' => $this->notes ?? '',
                     'total_price' => $this->total,
                 ]);
+
+                $orderId = $order->id;
 
                 // Crear los items
                 foreach ($this->cart as $item) {
                     OrderItem::create([
                         'order_id' => $order->id,
-                        'product_id' => $item['product_id'],
+                        'product_id' => $item['product_id'] ?? null,
                         'quantity' => $item['quantity'],
                         'unit_price' => $item['price'],
                     ]);
                 }
             });
 
-            session()->flash('success', '¡Orden creada exitosamente!');
+            // Emitir evento para imprimir el ticket
+            $this->dispatch('print-ticket', orderId: $orderId);
             
-            // Limpiar carrito
+            session()->flash('success', '¡Orden #' . $orderId . ' creada exitosamente!');
+            
+            // Limpiar carrito y resetear campos
             $this->clearCart();
             $this->customer_name = 'Cliente General';
             $this->notes = '';
-            
-            // Redirigir a la lista de órdenes
-            return redirect()->route('filament.admin.resources.orders.index');
+            $this->discount = 0;
+            $this->showDiscountInput = false;
             
         } catch (\Exception $e) {
             session()->flash('error', 'Error al guardar la orden: ' . $e->getMessage());
