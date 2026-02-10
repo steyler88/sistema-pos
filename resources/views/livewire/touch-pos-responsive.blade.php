@@ -384,5 +384,39 @@ class="relative">
     </span>
 </button>
 
+<!-- Mensajes Flash -->
+@if (session()->has('success'))
+    <div class="fixed top-4 right-4 z-50 animate-slide-in bg-green-500 text-white p-4 rounded-lg shadow-xl">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if (session()->has('error'))
+    <div class="fixed top-4 right-4 z-50 animate-slide-in bg-red-500 text-white p-4 rounded-lg shadow-xl">
+        {{ session('error') }}
+    </div>
+@endif
+
 </div>
+
+<!-- Script para Impresión de Tickets -->
+<script>
+    document.addEventListener('livewire:init', () => {
+        Livewire.on('print-ticket', (event) => {
+            const orderId = event.orderId;
+            console.log('📄 Imprimiendo ticket para orden #' + orderId);
+            
+            // Abrir ventana de impresión con el ticket
+            const ticketUrl = '/ticket/' + orderId;
+            const ticketWindow = window.open(ticketUrl, '_blank', 'width=300,height=600,toolbar=no,menubar=no,scrollbars=yes');
+            
+            // Esperar a que cargue y auto-imprimir
+            if (ticketWindow) {
+                ticketWindow.focus();
+            } else {
+                alert('⚠️ Por favor, habilita las ventanas emergentes para imprimir el ticket');
+            }
+        });
+    });
+</script>
 

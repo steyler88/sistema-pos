@@ -15,11 +15,8 @@
 <body class="bg-gray-900">
     {{ $slot }}
     
-    <!-- Livewire Scripts -->
+    <!-- Livewire Scripts (incluye Alpine.js automáticamente en Livewire v3) -->
     @livewireScripts
-    
-    <!-- Alpine.js (necesario para Livewire) -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </body>
 </html>
 
