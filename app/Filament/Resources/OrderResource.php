@@ -73,6 +73,29 @@ class OrderResource extends Resource
                             ->required(fn (Get $get): bool => 
                                 in_array($get('order_type'), ['mesa', 'barra'])
                             ),
+                        
+                        // Canal de Venta (Multi-Precios)
+                        Forms\Components\ToggleButtons::make('sales_channel')
+                            ->label('💰 Canal de Venta')
+                            ->options([
+                                'local' => 'Local',
+                                'rappi' => 'Rappi',
+                                'web' => 'Web',
+                            ])
+                            ->icons([
+                                'local' => 'heroicon-o-building-storefront',
+                                'rappi' => 'heroicon-o-truck',
+                                'web' => 'heroicon-o-globe-alt',
+                            ])
+                            ->colors([
+                                'local' => 'info',
+                                'rappi' => 'warning',
+                                'web' => 'success',
+                            ])
+                            ->inline()
+                            ->required()
+                            ->default('local') // 👈 VALOR POR DEFECTO: LOCAL
+                            ->helperText('Los precios de los productos se ajustarán según el canal seleccionado'),
                     ])->columns(1),
 
                 // ============================================================
@@ -224,6 +247,27 @@ class OrderResource extends Resource
                         'para_llevar' => 'heroicon-o-shopping-bag',
                         'mesa' => 'heroicon-o-table-cells',
                         'barra' => 'heroicon-o-chart-bar',
+                    ])
+                    ->sortable(),
+                
+                // Nuevo: Canal de Venta
+                Tables\Columns\BadgeColumn::make('sales_channel')
+                    ->label('Canal')
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'local' => 'Local',
+                        'rappi' => 'Rappi',
+                        'web' => 'Web',
+                        default => 'Local',
+                    })
+                    ->colors([
+                        'info' => 'local',
+                        'warning' => 'rappi',
+                        'success' => 'web',
+                    ])
+                    ->icons([
+                        'local' => 'heroicon-o-building-storefront',
+                        'rappi' => 'heroicon-o-truck',
+                        'web' => 'heroicon-o-globe-alt',
                     ])
                     ->sortable(),
 

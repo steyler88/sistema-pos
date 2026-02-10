@@ -300,6 +300,30 @@
                 </div>
             </div>
 
+            <!-- CANAL DE VENTA (NUEVO - Multi-Precios) -->
+            <div class="bg-gray-100 dark:bg-gray-800 p-3 rounded-lg">
+                <div class="text-[10px] text-gray-600 dark:text-gray-400 mb-2 font-semibold uppercase flex items-center gap-1">
+                    <span>💰</span> Canal de Venta:
+                </div>
+                <div class="flex gap-2">
+                    <button wire:click="$set('sales_channel', 'local')"
+                            class="btn-pos btn-select flex-1 {{ $sales_channel === 'local' ? 'active' : '' }}">
+                        🏪 Local
+                    </button>
+                    <button wire:click="$set('sales_channel', 'rappi')"
+                            class="btn-pos btn-select flex-1 {{ $sales_channel === 'rappi' ? 'active' : '' }}">
+                        🛵 Rappi
+                    </button>
+                    <button wire:click="$set('sales_channel', 'web')"
+                            class="btn-pos btn-select flex-1 {{ $sales_channel === 'web' ? 'active' : '' }}">
+                        🌐 Web
+                    </button>
+                </div>
+                <div class="text-[9px] text-gray-500 dark:text-gray-500 mt-1 text-center">
+                    Los precios se ajustan según el canal seleccionado
+                </div>
+            </div>
+
             <!-- Pedido, Mesa, Comensales, Cliente y Camarero - MÁS COMPACTO -->
             <div class="px-2 py-1.5 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
                 <div class="flex flex-wrap gap-x-3 gap-y-1 text-xs items-center">

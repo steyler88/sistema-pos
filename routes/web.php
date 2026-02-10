@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Livewire\TouchPOS;
+use App\Livewire\SettingsComponent;
 use App\Models\Order;
 
 Route::get('/', function () {
@@ -19,3 +20,8 @@ Route::get('/ticket/{order}', function (Order $order) {
 })
     ->middleware(['auth'])
     ->name('ticket.print');
+
+// Ruta para Configuración del Sistema
+Route::get('/settings', SettingsComponent::class)
+    ->middleware(['auth'])
+    ->name('settings');

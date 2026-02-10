@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
+use App\Models\Setting;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -64,11 +65,57 @@ class ProductResource extends Resource
                     ->label('Categoría')
                     ->helperText('Selecciona una categoría o crea una nueva'),
                 
-                Forms\Components\TextInput::make('price')
-                    ->required()
-                    ->numeric()
-                    ->prefix('S/')
-                    ->label('Precio'),
+                // PRECIOS CONDICIONALES SEGÚN CONFIGURACIÓN
+                Forms\Components\Section::make('💰 Precios')
+                    ->schema(function () {
+                        $multiPricingEnabled = Setting::get('enable_multi_pricing', false);
+                        
+                        if ($multiPricingEnabled) {
+                            return [
+                                Forms\Components\Grid::make(3)
+                                    ->schema([
+                                        Forms\Components\TextInput::make('price_local')
+                                            ->label('💵 Precio Local')
+                                            ->required()
+                                            ->numeric()
+                                            ->prefix('S/')
+                                            ->helperText('Precio para ventas en el local'),
+                                        
+                                        Forms\Components\TextInput::make('price_rappi')
+                                            ->label('🛵 Precio Rappi')
+                                            ->required()
+                                            ->numeric()
+                                            ->prefix('S/')
+                                            ->helperText('Precio para pedidos de Rappi'),
+                                        
+                                        Forms\Components\TextInput::make('price_web')
+                                            ->label('🌐 Precio Web')
+                                            ->required()
+                                            ->numeric()
+                                            ->prefix('S/')
+                                            ->helperText('Precio para pedidos web'),
+                                    ]),
+                                
+                                Forms\Components\Placeholder::make('info')
+                                    ->label('')
+                                    ->content('✅ Multi-precios habilitado. Para desactivar, ve a Configuración del Sistema → Reglas de Negocio'),
+                            ];
+                        } else {
+                            return [
+                                Forms\Components\TextInput::make('price')
+                                    ->label('💰 Precio Único')
+                                    ->required()
+                                    ->numeric()
+                                    ->prefix('S/'),
+                                
+                                Forms\Components\Placeholder::make('info')
+                                    ->label('')
+                                    ->content('ℹ️ Multi-precios deshabilitado. Para habilitar, ve a Configuración del Sistema → Reglas de Negocio'),
+                            ];
+                        }
+                    })
+                    ->description('Configura los precios del producto')
+                    ->collapsible(),
 
                 Forms\Components\FileUpload::make('image')
                     ->image()
@@ -107,7 +154,22 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('price')
                     ->money('PEN') 
                     ->sortable()
-                    ->label('Precio'),
+                    ->label('Precio')
+                    ->formatStateUsing(function ($record) {
+                        $multiPricing = Setting::get('enable_multi_pricing', false);
+                        
+                        if ($multiPricing) {
+                            return sprintf(
+                                'Local: S/ %s | Rappi: S/ %s | Web: S/ %s',
+                                number_format($record->price_local ?? $record->price, 2),
+                                number_format($record->price_rappi ?? $record->price, 2),
+                                number_format($record->price_web ?? $record->price, 2)
+                            );
+                        }
+                        
+                        return 'S/ ' . number_format($record->price, 2);
+                    })
+                    ->wrap(),
 
                 Tables\Columns\IconColumn::make('is_active')
                     ->boolean()

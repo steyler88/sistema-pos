@@ -20,6 +20,7 @@ class TouchPOS extends Component
     // Información de la orden
     public $customer_name = 'Cliente General';
     public $order_type = 'delivery';
+    public $sales_channel = 'local'; // Canal de venta: 'local' (default), 'rappi', 'web'
     public $table_location = null;
     public $payment_method = 'yape';
     public $status = 'pending';
@@ -51,6 +52,9 @@ class TouchPOS extends Component
 
         $cartKey = 'product_' . $productId;
 
+        // Obtener el precio según el canal de venta
+        $price = $product->getPriceByChannel($this->sales_channel);
+
         if (isset($this->cart[$cartKey])) {
             // Si ya existe, aumentar cantidad
             $this->cart[$cartKey]['quantity']++;
@@ -59,7 +63,7 @@ class TouchPOS extends Component
             $this->cart[$cartKey] = [
                 'product_id' => $product->id,
                 'name' => $product->name,
-                'price' => $product->price,
+                'price' => $price, // Usar el precio del canal seleccionado
                 'quantity' => 1,
             ];
         }
@@ -227,6 +231,7 @@ class TouchPOS extends Component
                 $order = Order::create([
                     'customer_name' => $this->customer_name ?? 'Cliente General',
                     'order_type' => $this->order_type,
+                    'sales_channel' => $this->sales_channel, // Guardar el canal de venta
                     'table_location' => $this->table_location,
                     'payment_method' => $this->payment_method,
                     'status' => 'pending',
@@ -262,6 +267,34 @@ class TouchPOS extends Component
         } catch (\Exception $e) {
             session()->flash('error', 'Error al guardar la orden: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Actualizar precios del carrito cuando cambia el canal de venta
+     */
+    public function updatedSalesChannel()
+    {
+        // Recalcular precios de todos los items del carrito según el nuevo canal
+        foreach ($this->cart as $cartKey => &$item) {
+            if (isset($item['product_id'])) {
+                $product = Product::find($item['product_id']);
+                if ($product) {
+                    $item['price'] = $product->getPriceByChannel($this->sales_channel);
+                }
+            }
+        }
+        
+        // Recalcular el total
+        $this->calculateTotal();
+        
+        // Mostrar mensaje al usuario
+        $channelNames = [
+            'local' => 'Local',
+            'rappi' => 'Rappi',
+            'web' => 'Web',
+        ];
+        
+        session()->flash('info', '✅ Precios actualizados para canal: ' . ($channelNames[$this->sales_channel] ?? $this->sales_channel));
     }
 
     /**

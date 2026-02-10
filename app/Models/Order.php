@@ -12,6 +12,7 @@ class Order extends Model
     protected $fillable = [
         'customer_name',
         'order_type',
+        'sales_channel',  // Canal de venta: 'local', 'rappi', 'web'
         'table_location',
         'notes',
         'total_price',

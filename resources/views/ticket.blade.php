@@ -149,10 +149,10 @@
     <div class="ticket">
         <!-- CABECERA -->
         <div class="header">
-            <div class="logo">ELCHEPIZZA</div>
-            <div class="info-line">RUC: 10447303766</div>
-            <div class="info-line" style="word-wrap: break-word; white-space: normal;">Res. Praderas de Pariachi mz G lt 9 ATE</div>
-            <div class="info-line">Tel: 952 208 570</div>
+            <div class="logo">{{ \App\Models\Setting::get('company_name', 'ELCHEPIZZA') }}</div>
+            <div class="info-line">RUC: {{ \App\Models\Setting::get('company_ruc', '10447303766') }}</div>
+            <div class="info-line" style="word-wrap: break-word; white-space: normal;">{{ \App\Models\Setting::get('company_address', 'Res. Praderas de Pariachi mz G lt 9 ATE') }}</div>
+            <div class="info-line">Tel: {{ \App\Models\Setting::get('company_phone', '952 208 570') }}</div>
         </div>
         
         <!-- TIPO DE SERVICIO -->
@@ -171,7 +171,7 @@
         <!-- INFORMACIÓN DE LA ORDEN -->
         <div class="section">
             <div class="info-line">Orden: #{{ str_pad($order->id, 4, '0', STR_PAD_LEFT) }}</div>
-            <div class="info-line">Fecha: {{ $order->created_at->timezone('America/Lima')->format('d/m/Y h:i A') }}</div>
+            <div class="info-line">Fecha: {{ $order->created_at->timezone(\App\Models\Setting::get('timezone', 'America/Lima'))->format('d/m/Y h:i A') }}</div>
             <div class="info-line">Cliente: {{ Str::limit($order->customer_name, 20, '...') }}</div>
             <div class="info-line">Cajero: {{ Auth::user()->name ?? 'Sistema' }}</div>
         </div>
@@ -241,8 +241,8 @@
         <!-- PIE DE PÁGINA -->
         <div class="footer">
             <div>********************************</div>
-            <div class="bold" style="margin: 8px 0; font-size: 14px;">GRACIAS CHE !</div>
-            <div style="margin-top: 6px; font-size: 10px;">www.elchepizza.pe</div>
+            <div class="bold" style="margin: 8px 0; font-size: 14px;">{{ \App\Models\Setting::get('ticket_footer_message', 'GRACIAS CHE !') }}</div>
+            <div style="margin-top: 6px; font-size: 10px;">{{ \App\Models\Setting::get('company_website', 'www.elchepizza.pe') }}</div>
         </div>
     </div>
     
