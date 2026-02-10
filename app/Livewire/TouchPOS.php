@@ -246,6 +246,7 @@ class TouchPOS extends Component
                     OrderItem::create([
                         'order_id' => $order->id,
                         'product_id' => $item['product_id'] ?? null,
+                        'combo_id' => $item['combo_id'] ?? null,
                         'quantity' => $item['quantity'],
                         'unit_price' => $item['price'],
                     ]);
